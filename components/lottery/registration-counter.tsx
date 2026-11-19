@@ -51,14 +51,15 @@ export default function RegistrationCounter({count,ticketDisplay=false}:{count:n
    resize();loaded=true;setReady(true);
   }catch{renderer?.domElement.remove();setReady(false)}}
   const io=new IntersectionObserver(([e])=>{active=e.isIntersecting;if(active)void init()},{rootMargin:'160px'});io.observe(el);const ro=new ResizeObserver(resize);ro.observe(el);
-  function tick(ms:number){raf=requestAnimationFrame(tick);if(!active||!loaded||!renderer||dead||document.hidden||ms-lastFrame<33)return;lastFrame=ms;const c=value.current===null?'—————':String(value.current).padStart(5,'0');
+  function tick(ms:number){raf=requestAnimationFrame(tick);if(!active||!loaded||!renderer||dead||document.hidden||ms-lastFrame<33)return;lastFrame=ms;const currentCount=value.current;if(currentCount===null)return;const c=String(currentCount).padStart(5,'0');
    if(c!==last){digits.forEach((d,i)=>{if(c[i]===last[i])return;d.geometry.dispose();d.geometry=geometry(c[i],1.03);if(last&&!motion.matches)flips.set(d,ms)});last=c}
    for(const [d,start] of flips){const t=Math.min(1,(ms-start)/420);d.rotation.x=motion.matches?0:(1-t)**3*.8;if(t===1||motion.matches)flips.delete(d)}renderer.render(scene,camera);
   }raf=requestAnimationFrame(tick);
  const impact=()=>{if(!motion.matches)digits.forEach(d=>flips.set(d,performance.now()))};window.addEventListener('telecenter:counter-impact',impact);
   return()=>{window.removeEventListener('telecenter:counter-impact',impact);dead=true;cancelAnimationFrame(raf);io.disconnect();ro.disconnect();const materials=new Set<T.Material>();scene.traverse(o=>{if(o instanceof T.Mesh){o.geometry.dispose();(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>materials.add(m))}});[pearl,cyan,ink,edge,silver,white].forEach(m=>materials.add(m));materials.forEach(m=>{for(const v of Object.values(m))if(v instanceof T.Texture)v.dispose();m.dispose()});floor?.getRenderTarget().dispose();env?.dispose();renderer?.dispose();renderer?.domElement.remove()};
  },[]);
- return <div className={'registration-counter '+(ready?'is-ready':'')} ref={host}>
+ const showing3D=ready&&count!==null;
+ return <div className={'registration-counter '+(showing3D?'is-ready':'')} data-count-loading={count===null||undefined} ref={host}>
  {ticketDisplay ? <div className="ticket-score-preview" aria-hidden="true">
    <img src="/models-brand/LOTTO_BALL_23.png" alt="" />
    <div className="ticket-score-panel">
@@ -66,7 +67,7 @@ export default function RegistrationCounter({count,ticketDisplay=false}:{count:n
      <div className="ticket-score-digits">{Array.from(count === null ? '—————' : String(count).padStart(5,'0'), (digit,index) => <b key={index}>{digit}</b>)}</div>
      <span>Билетов в игре</span>
    </div>
- </div> : <div className="registration-counter-fallback" aria-hidden={ready}><span>УЖЕ В ИГРЕ</span><strong>{count===null?'—':count.toLocaleString('ru-RU')}</strong><span>БИЛЕТОВ В ИГРЕ</span></div>}
+ </div> : <div className="registration-counter-fallback" aria-hidden={showing3D}><span>УЖЕ В ИГРЕ</span><strong>{count===null?'—':count.toLocaleString('ru-RU')}</strong><span>БИЛЕТОВ В ИГРЕ</span></div>}
  <span className="sr-only" role="status" aria-live="polite">Билетов: {count===null?'загрузка':count.toLocaleString('ru-RU')}</span>
  </div>;
 }

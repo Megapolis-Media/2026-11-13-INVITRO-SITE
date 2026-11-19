@@ -1,1 +1,1 @@
-export type GameRound={id:string;game:'yak'|'pelsh';category:string;hint:string;mask:string;letters:string;attempts:number;solved:boolean;finished:boolean;answer?:string;choices?:{id:string,title:string}[];audio?:string;guest:boolean;played?:number};
+export type GameRound={id:string;game:'yak'|'pelsh';category:string;hint:string;mask:string;letters:string;attempts:number;solved:boolean;finished:boolean;answer?:string;choices?:{id:string,title:string}[];audio?:string;guest:boolean;played?:number;cueNumber?:number;clips?:string[]};

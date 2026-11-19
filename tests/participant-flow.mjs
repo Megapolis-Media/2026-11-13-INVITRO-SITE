@@ -14,7 +14,7 @@ globalThis.__testEnv=bindings;
 const compile=(src)=>ts.transpileModule(src,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
 // The real application modules run together; only platform bindings and bundled assets are local fixtures.
 const entries = {
- 'lib/participant/server':'server','lib/participant/agglomerations':'regions','lib/participant/ticket-mail':'mail',
+ 'lib/event/studio-authorization':'studio-auth','lib/participant/server':'server','lib/participant/agglomerations':'regions','lib/participant/ticket-mail':'mail',
  'app/api/participant/route':'route','app/api/games/route':'games','lib/games/catalog':'bank',
  'lib/games/words':'words','lib/games/melodies':'melodies','lib/broadcast/catalog':'catalog',
  'lib/broadcast/server':'broadcast-server','app/api/messages/route':'messages','app/api/studio/route':'studio',
@@ -60,22 +60,28 @@ try{
   const response=await games.POST(new Request('https://test.invalid/api/games',{method:'POST',headers:{Origin:'https://test.invalid',Cookie:cookie},body:JSON.stringify(body)}));
   assert.equal(response.status,200);return await response.json();
  }
+ assert.equal(playable.pelsh.length,10);
+ for(const [i,q] of playable.pelsh.entries()){
+  const {round}=await play({action:'start',game:'pelsh'});
+  assert.equal(round.cueNumber,i+1);
+  assert.deepEqual(round.choices.map(c=>c.title).sort(),[q.title,...q.distractors].sort());
+  assert.equal(round.clips.length,7);
+  for(const url of round.clips)assert.ok((await fs.stat('public'+url)).size>500);
+  const choose=title=>play({action:'answer',roundId:round.id,answer:round.choices.find(c=>c.title===title).id});
+  assert.equal((await choose(q.distractors[0])).round.solved,false);
+  const solved=await choose(q.title);
+  assert.equal(solved.profile.gameProgress.pelsh.solved,i+1);
+  assert.equal(solved.profile.tickets.length,i===9?2:1,'All ten distinct melodies are required');
+  assert.equal((await choose(q.title)).profile.tickets.length,i===9?2:1,'Retry cannot duplicate the ticket');
+  clock+=61000;
+ }
  for(let i=0;i<playable.yak.length;i++){
   const {round}=await play({action:'start',game:'yak'}),q=playable.yak.find(q=>q.hint===round.hint);
   let result;
   for(const letter of new Set(q.answer))result=await play({action:'letter',letter,roundId:round.id});
   assert.equal(result.profile.gameProgress.yak.solved,i+1);
-  assert.equal(result.profile.tickets.length,i===playable.yak.length-1?2:1);
+  assert.equal(result.profile.tickets.length,2);
   clock+=61000;
- }
- for(const q of playable.pelsh){
-  const {round}=await play({action:'start',game:'pelsh'});
-  const choose=title=>play({action:'answer',roundId:round.id,answer:round.choices.find(c=>c.title===title).id});
-  assert.equal((await choose(q.distractors[0])).round.solved,false);
-  const solved=await choose(q.title);
-  assert.equal(solved.profile.gameProgress.pelsh.solved,playable.pelsh.length);
-  assert.equal(solved.profile.tickets.length,2,'Finishing both studios adds just one ticket');
-  assert.equal((await choose(q.title)).profile.tickets.length,2,'Retry cannot duplicate the ticket');
  }
  const repeat=await call('reward');assert.equal(repeat.value.tickets.length,2);assert.equal(sql.prepare('SELECT seq FROM sqlite_sequence WHERE name=?').get('tickets').seq,2,'Second ticket is idempotent');
  const form=new FormData();form.set('file',new File([new Uint8Array([137,80,78,71])],'photo.png',{type:'image/png'}));form.set('kind','photo');form.set('consent','true');const up=await POST(new Request('https://test.invalid/api/participant',{method:'POST',headers:{Origin:'https://test.invalid',Cookie:session},body:form}));assert.equal(up.status,200);const media=await up.json();assert.equal(objects.size,1);assert.equal((await GET(new Request('https://test.invalid/api/participant?media='+media.id,{headers:{Cookie:session}}))).status,200);assert.equal((await GET(new Request('https://test.invalid/api/participant?media='+media.id))).status,401,'Files are private');

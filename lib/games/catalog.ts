@@ -4,7 +4,7 @@ import {MELODIES} from './melodies';
 export const playable = {yak: WORDS, pelsh: MELODIES.filter(q => q.ready && q.audio)};
 export const requiredIds = {
   yak: playable.yak.map(q => q.id),
-  pelsh: playable.pelsh.map(q => q.id),
+  pelsh: MELODIES.map(q => q.id),
 };
 
 export function gameProgress(rows: {game: string; question: string}[]) {

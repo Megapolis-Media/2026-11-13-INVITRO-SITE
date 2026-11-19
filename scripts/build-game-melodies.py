@@ -1,4 +1,4 @@
-"""Build 24 short instrumental quiz recordings from reusable historic scores.
+"""Rebuild the archived 24-track holiday catalog from reusable historic scores.
 Source permission: https://github.com/bbloomf/christmas-carols/blob/master/LICENSE.md
 No original commercial recordings or lyrics are included.
 """
@@ -40,5 +40,4 @@ def make(pair):
  return {'id':ident,'title':title,'audio':'/games-v2/audio/'+ident+'.mp3','source':url,'arrangement':'Instrumental bell/piano rendering from reusable MIDI score; no vocals','seconds':19}
 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:result=list(pool.map(make,enumerate(items)))
 (ROOT/'docs/games/melody-sources.json').write_text(json.dumps(result,ensure_ascii=False,indent=2))
-(ROOT/'lib/games/melodies.ts').write_text('export const MELODIES='+json.dumps([{k:r[k] for k in ['id','title','audio']} for r in result],ensure_ascii=False,indent=2)+';\n')
 print('Rendered',len(result),'distinct melodies')

@@ -17,7 +17,9 @@ function details(r:Row){
  const finished=!!r.solved||r.attempts>=6;
  return {id:r.id,game:r.game,letters:r.letters,attempts:r.attempts,solved:!!r.solved,finished,guest:r.user.startsWith('guest:'),
   ...('answer' in q ? {category:q.category,hint:q.hint,mask:[...q.answer].map(c=>finished||r.letters.includes(c)||!/[А-Я]/.test(c)?c:'•').join(''),answer:finished?q.answer:undefined}
-   : {category:'',hint:'Узнайте мелодию',mask:'',choices:options(q),audio:q.audio,answer:finished?q.title:undefined})};
+   : {category:'',hint:'Назовите мелодию',mask:'',choices:options(q),audio:q.audio,
+      cueNumber:playable.pelsh.indexOf(q)+1,
+      clips:Array.from({length:7},(_,i)=>q.audio.replace(/7\.mp3$/, (i+1)+'.mp3')),answer:finished?q.title:undefined})};
 }
 
 export async function POST(req:Request){
@@ -49,10 +51,10 @@ export async function POST(req:Request){
    const candidates=pending.length?pending:bank;
    const oldest=Math.min(...candidates.map(q=>byId.get(q.id)?.last||0));
    const pool=candidates.filter(q=>(byId.get(q.id)?.last||0)===oldest);
-   const question=pool[crypto.getRandomValues(new Uint32Array(1))[0]%pool.length].id;
+   const question=(game==='pelsh'?pool[0]:pool[crypto.getRandomValues(new Uint32Array(1))[0]%pool.length]).id;
    const r:Row={id:crypto.randomUUID(),user,game,question,letters:'',attempts:0,solved:0,created:now,expires:now+3600000};
    await d.prepare('INSERT INTO game_rounds(id,user,game,question,created,expires) VALUES(?,?,?,?,?,?)').bind(r.id,user,game,question,now,r.expires).run();
-   return Response.json({round:details(r),totals},{headers});
+   return Response.json({round:{...details(r),played:bank.length-pending.length},totals},{headers});
   }
   const r=await d.prepare('SELECT * FROM game_rounds WHERE id=? AND user=? AND expires>?').bind(String(b.roundId||''),user,now).first<Row>();
   if(!r)throw fail('Раунд завершён. Начните следующий.',404);
@@ -84,6 +86,9 @@ export async function POST(req:Request){
   const updated=await d.prepare('SELECT * FROM game_rounds WHERE id=? AND user=?').bind(r.id,user).first<Row>();
   const profile=guest?undefined:await accountWithReward(user);
   if(profile?.tickets.some(t=>t.kind==='activity'))await deliverUserTickets(user);
-  return Response.json({round:details(updated!),profile,totals},{headers});
+  const played=profile?.gameProgress[r.game].solved ?? (await d.prepare(
+   'SELECT COUNT(DISTINCT question) AS n FROM game_rounds WHERE user=? AND game=? AND solved=1 AND question IN (SELECT value FROM json_each(?))'
+  ).bind(user,r.game,JSON.stringify(requiredIds[r.game])).first<{n:number}>())?.n ?? 0;
+  return Response.json({round:{...details(updated!),played},profile,totals},{headers});
  }catch(e){return responseError(e)}
 }

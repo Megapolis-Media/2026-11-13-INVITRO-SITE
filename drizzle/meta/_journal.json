@@ -43,6 +43,13 @@
       "when": 1794660040687,
       "tag": "0005_large_morlocks",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1795108189027,
+      "tag": "0006_game_completions",
+      "breakpoints": true
     }
   ]
 }

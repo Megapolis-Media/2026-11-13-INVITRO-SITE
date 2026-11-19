@@ -1,0 +1,57 @@
+import {AGGLOMERATIONS} from '@/lib/participant/agglomerations';
+import {ticketSVG,deliverTicket,deliverUserTickets} from '@/lib/participant/ticket-mail';
+import {settings,db,hash,token,fail,identity,sameOrigin,account,issue,queueMail,lotteryConfig,responseError} from '@/lib/participant/server';
+export const dynamic='force-dynamic';
+const emailPattern=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const cookie=(t:string,max=2592000)=>`invitro_session=${t}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${max}`;
+const ok=(v:unknown,h:Record<string,string>={})=>Response.json(v,{headers:{'Cache-Control':'no-store',...h}});
+export async function GET(req:Request){try{const user=await identity(req),params=new URL(req.url).searchParams,id=params.get('media');if(params.has('ticket')){const t=await db().prepare('SELECT id,kind FROM tickets WHERE id=? AND user=?').bind(Number(params.get('ticket')),user).first<{id:number,kind:string}>();if(!t)throw fail('Билет не найден.',404);const a=await account(user);return new Response(ticketSVG(t.id,a.name,t.kind==='activity'),{headers:{'Content-Type':'image/svg+xml; charset=utf-8','Content-Disposition':`attachment; filename=INVITRO-ticket-${t.id}.svg`,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}})}if(!id)return ok(await account(user));const m=await db().prepare('SELECT key,type FROM media WHERE id=? AND user=?').bind(id,user).first<{key:string,type:string}>();if(!m)throw fail('Файл не найден.',404);const o=await settings().MEDIA.get(m.key);if(!o)throw fail('Файл недоступен.',404);return new Response(o.body,{headers:{'Content-Type':m.type,'Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}})}catch(e){return responseError(e)}}
+export async function POST(req:Request){try{sameOrigin(req);const d=db(),cfg=settings(),now=Date.now();
+ if(req.headers.get('content-type')?.includes('multipart/form-data')){
+  const user=await identity(req);if(Number(req.headers.get('content-length')||0)>26*1024*1024)throw fail('Максимальный размер — 25 МБ.',413);const f=await req.formData(),file=f.get('file'),kind=String(f.get('kind')||'attachment');
+  if(!(file instanceof File)||!file.size||file.size>25*1024*1024)throw fail('Выберите файл до 25 МБ.');const type=file.type.split(';')[0];if(!['image/jpeg','image/png','image/webp','audio/mpeg','audio/mp4','audio/webm','audio/ogg','audio/wav','video/mp4','video/webm','video/quicktime'].includes(type))throw fail('Поддерживаются JPG, PNG, WebP, MP3, M4A, WAV, WebM, OGG и MP4.');
+  if(!['photo','intro','greeting','attachment'].includes(kind)||f.get('consent')!=='true')throw fail('Подтвердите разрешение использовать материал в корпоративном эфире.');if(kind==='photo'&&!type.startsWith('image/'))throw fail('Для фотографии выберите изображение.');
+  const n=await d.prepare('SELECT COUNT(*) AS n FROM media WHERE user=?').bind(user).first<{n:number}>();if((n?.n||0)>=20)throw fail('Достигнут лимит: 20 файлов. Удалите ненужные материалы.');
+  const id=crypto.randomUUID(),key=`participants/${user}/${id}`;await cfg.MEDIA.put(key,file.stream(),{httpMetadata:{contentType:type}});try{await d.prepare('INSERT INTO media(id,user,key,name,type,kind,size,consent,created) VALUES(?,?,?,?,?,?,?,?,?)').bind(id,user,key,file.name.slice(0,150),type,kind,file.size,1,now).run()}catch(e){await cfg.MEDIA.delete(key);throw e}return ok({id,name:file.name,type,kind,size:file.size});
+ }
+ const b=await req.json() as Record<string,any>,action=b.action;
+ if(action==='code'){
+  const email=String(b.email||'').trim().toLowerCase();if(!emailPattern.test(email)||email.length>254)throw fail('Проверьте адрес электронной почты.');
+  if(!(await lotteryConfig()).open&&!await d.prepare("SELECT 1 FROM participants p JOIN tickets t ON t.user=p.id WHERE p.email=? AND t.kind='registration'").bind(email).first())throw fail('Регистрация ещё не открыта. Следите за анонсом.',403);
+  if(!cfg.RESEND_API_KEY||!cfg.MAIL_FROM||!cfg.EMPLOYEE_EMAIL_DOMAINS)throw fail('Регистрация готовится к открытию: организаторы подключают отправку кодов на рабочую почту.',503);
+  if(!cfg.EMPLOYEE_EMAIL_DOMAINS.toLowerCase().split(',').map(s=>s.trim()).includes(email.split('@')[1]))throw fail('Укажите рабочую почту компании. Если домен не принимается, обратитесь в поддержку.');
+  const ip=await hash(req.headers.get('cf-connecting-ip')||'unknown');const recent=await d.prepare('SELECT COUNT(*) AS n FROM codes WHERE ip=? AND created>?').bind(ip,now-3600000).first<{n:number}>();if((recent?.n||0)>=200)throw fail('Слишком много запросов с этой сети. Попробуйте позже.',429);
+  const code=String(crypto.getRandomValues(new Uint32Array(1))[0]%1000000).padStart(6,'0'),digest=await hash(email+code+cfg.RESEND_API_KEY);
+  const row=await d.prepare('INSERT INTO codes(email,hash,expires,created,attempts,ip) VALUES(?,?,?,?,0,?) ON CONFLICT(email) DO UPDATE SET hash=excluded.hash,expires=excluded.expires,created=excluded.created,attempts=0,ip=excluded.ip WHERE codes.created<? RETURNING email').bind(email,digest,now+600000,now,ip,now-60000).first();if(!row)throw fail('Повторный код можно запросить через минуту.',429);
+  const sent=await fetch('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${cfg.RESEND_API_KEY}`,'Content-Type':'application/json'},body:JSON.stringify({from:cfg.MAIL_FROM,to:[email],subject:'Код входа в Телецентр INVITRO',text:`Ваш код: ${code}\nОн действует 10 минут. Никому не сообщайте код. Если вы не запрашивали вход, пропустите это письмо.`})});if(!sent.ok){await d.prepare('DELETE FROM codes WHERE email=? AND hash=?').bind(email,digest).run();throw fail('Не удалось отправить письмо. Попробуйте позже.',503)}return ok({sent:true});
+ }
+ if(action==='verify'){
+  const email=String(b.email||'').trim().toLowerCase(),code=String(b.code||'');if(!/^\d{6}$/.test(code)||!emailPattern.test(email)||!cfg.RESEND_API_KEY)throw fail('Проверьте шестизначный код.');
+  await d.prepare('UPDATE codes SET attempts=attempts+1 WHERE email=?').bind(email).run();const valid=await d.prepare('DELETE FROM codes WHERE email=? AND hash=? AND expires>? AND attempts<=5 RETURNING email').bind(email,await hash(email+code+cfg.RESEND_API_KEY),now).first();if(!valid)throw fail('Код неверный или истёк. Запросите новый.');
+  if(!(await lotteryConfig()).open&&!await d.prepare('SELECT id FROM participants WHERE email=?').bind(email).first())throw fail('Регистрация закрыта.',403);
+  await d.prepare('INSERT OR IGNORE INTO participants(id,email,created) VALUES(?,?,?)').bind(crypto.randomUUID(),email,now).run();const user=(await d.prepare('SELECT id FROM participants WHERE email=?').bind(email).first<{id:string}>())!.id,t=token();await d.prepare('INSERT INTO sessions(hash,user,expires) VALUES(?,?,?)').bind(await hash(t),user,now+2592000000).run();return ok(await account(user),{'Set-Cookie':cookie(t)});
+ }
+ if(action==='contact'){
+  const email=String(b.email||'').trim().toLowerCase(),body=String(b.body||'').trim(),recipient=String(b.recipient||'Техническая поддержка').slice(0,150);if(!emailPattern.test(email)||body.length<5||body.length>2000)throw fail('Укажите почту для ответа и вопрос от 5 до 2000 символов.');const owner='contact:'+await hash(req.headers.get('cf-connecting-ip')||'anonymous');const n=await d.prepare('SELECT COUNT(*) AS n FROM messages WHERE user=? AND created>?').bind(owner,now-3600000).first<{n:number}>();if((n?.n||0)>=5)throw fail('Слишком много обращений. Попробуйте позже.',429);await d.prepare('INSERT INTO messages(id,user,kind,recipient,body,created) VALUES(?,?,?,?,?,?)').bind(crypto.randomUUID(),owner,'support',recipient+' / '+email,body,now).run();return ok({saved:true});
+ }
+ const user=await identity(req);
+ if(action==='logout'){const raw=req.headers.get('cookie')?.match(/(?:^|; )invitro_session=([^;]+)/)?.[1]||'';await d.prepare('DELETE FROM sessions WHERE hash=?').bind(await hash(raw)).run();return ok({ok:true},{'Set-Cookie':cookie('',0)})}
+ if(action==='profile'){
+  const first=String(b.first||'').trim(),last=String(b.last||'').trim(),agglomeration=String(b.agglomeration||'');if(first.length<2||last.length<2||[first,last].some(s=>s.length>100)||!AGGLOMERATIONS.includes(agglomeration as any)||!b.consent)throw fail('Укажите агломерацию, фамилию, имя и согласие на участие.');
+  await d.batch([d.prepare('UPDATE participants SET first=?,last=?,agglomeration=? WHERE id=?').bind(first,last,agglomeration,user),issue(user,'registration'),queueMail(user)]);const a=await account(user);if(!a.tickets.length)throw fail('Регистрация закрыта или достигнут лимит участников. Билет пока не выдан.',409);await deliverUserTickets(user);return ok(a);
+ }
+ if(action==='heartbeat'){await d.prepare('UPDATE participants SET seconds=seconds+CASE WHEN heartbeat>? AND heartbeat<=? THEN MIN(30,CAST((?-heartbeat)/1000 AS INTEGER)) ELSE 0 END,heartbeat=? WHERE id=? AND heartbeat<=?').bind(now-65000,now-25000,now,now,user,now-25000).run();return ok(await account(user))}
+ if(action==='challenge'){if(!['yak','pelsh'].includes(b.game))throw fail('Студия не найдена.');await d.prepare('INSERT INTO challenges(id,user,game,created) VALUES(?,?,?,?) ON CONFLICT(user,game) DO UPDATE SET created=excluded.created,attempts=0').bind(crypto.randomUUID(),user,b.game,now).run();return ok({ready:true})}
+ if(action==='answer')throw fail('Откройте обновлённую игру на главной странице.',409);
+ if(action==='reward'){
+  await d.batch([issue(user,'activity'),queueMail(user)]);await deliverUserTickets(user);const a=await account(user);if(!a.tickets.some((v:any)=>v.kind==='activity'))throw fail('Для второго билета нужны 100 баллов и первый билет.');return ok(a);
+ }
+ if(action==='emailTicket'){const id=Number(b.id);if(!await d.prepare('SELECT id,kind FROM tickets WHERE id=? AND user=?').bind(id,user).first())throw fail('Билет не найден.',404);await queueMail(user).run();const row=await d.prepare("UPDATE ticket_mail SET state='pending',generation=generation+1 WHERE ticket=? AND attempted<? AND state<>'sending' RETURNING ticket").bind(id,now-60000).first();if(!row)throw fail('Повторная отправка доступна через минуту.',429);return ok({delivery:await deliverTicket(id)})}
+ if(action==='deleteMedia'){const m=await d.prepare('SELECT key FROM media WHERE id=? AND user=?').bind(String(b.id),user).first<{key:string}>();if(m){await cfg.MEDIA.delete(m.key);await d.prepare('DELETE FROM media WHERE id=? AND user=?').bind(String(b.id),user).run()}return ok(await account(user))}
+ if(action==='message'){
+  const body=String(b.body||'').trim(),recipient=String(b.recipient||'').trim(),kind=String(b.kind||'greeting');if(!['greeting','support','organizers'].includes(kind)||body.length>2000||recipient.length>150||(!body&&!b.mediaId))throw fail('Добавьте текст или запись.');
+  if(b.mediaId&&!await d.prepare('SELECT id FROM media WHERE id=? AND user=?').bind(String(b.mediaId),user).first())throw fail('Вложение недоступно.');const n=await d.prepare('SELECT COUNT(*) AS n FROM messages WHERE user=? AND created>?').bind(user,now-3600000).first<{n:number}>();if((n?.n||0)>=10)throw fail('Можно отправить до 10 сообщений в час.',429);
+  await d.prepare('INSERT INTO messages(id,user,kind,recipient,body,media_id,created) VALUES(?,?,?,?,?,?,?)').bind(crypto.randomUUID(),user,kind,recipient,body,b.mediaId||null,now).run();return ok({saved:true});
+ }
+ throw fail('Неизвестное действие.');
+ }catch(e){return responseError(e)}}

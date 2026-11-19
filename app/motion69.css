@@ -1,0 +1,25 @@
+/* One ensemble. No viewer or individual dragging controls. */
+.ny-site .ensemble-hero{height:1040px;min-height:1040px}
+.ensemble-hero .cinema-image{inset:38% 5% 5%;perspective:1200px;touch-action:pan-y}
+.hero-ensemble{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.ensemble-hero .hero-prop{cursor:default;touch-action:pan-y;transform:none}
+.ensemble-hero .hero-tv{width:30%;left:2%;bottom:auto;top:0}
+.ensemble-hero .hero-radio{width:18%;left:41%;bottom:auto;top:12%}
+.ensemble-hero .hero-camera{width:22%;left:auto;right:3%;bottom:auto;top:-2%}
+.ensemble-hero .hero-drum{width:34%;left:45%;bottom:0;top:auto}
+.ensemble-hero .hero-prop img{animation:ensemble-breathe 8s ease-in-out infinite;animation-delay:0s}
+.ensemble-hero .hero-drum img{animation:none}
+@keyframes ensemble-breathe{50%{transform:translateY(-4px)}}
+.ball-speech{transform:none!important;width:180px!important;font-size:14px!important}
+.ball-speech:after{content:'';position:absolute;right:-9px;bottom:12px;border-left:12px solid #dffaff;border-top:8px solid transparent;border-bottom:8px solid transparent}
+@media(max-width:700px){
+ .ny-site .ensemble-hero{height:860px;min-height:860px}
+ .ensemble-hero .cinema-image{inset:43% 5% 5%}
+ .ensemble-hero .hero-tv{width:39%;left:-1%;top:0;bottom:auto}
+ .ensemble-hero .hero-radio{width:25%;left:42%;top:15%;bottom:auto}
+ .ensemble-hero .hero-camera{width:28%;right:-1%;top:-1%;bottom:auto}
+ .ensemble-hero .hero-drum{width:64%;left:35%;bottom:1%;top:auto}
+ .ball-speech{width:128px!important;font-size:12px!important;padding:12px!important;line-height:1.35!important}
+}
+@media(prefers-reduced-motion:reduce){.ensemble-hero .hero-prop img{animation:none}}
+@media(max-width:700px){.ny-site .ensemble-hero{height:780px;min-height:780px}.ensemble-hero .cinema-image{inset:43% 5% 10%}.ensemble-hero .hero-tv{width:42%}.ensemble-hero .hero-radio{width:27%}.ensemble-hero .hero-drum{bottom:3%}}

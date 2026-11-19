@@ -1,0 +1,7 @@
+Instrumental winter music quiz — 24 short bell/piano renderings.
+Score source: Benjamin Bloomfield, A Collection of Christmas Carols.
+https://acollectionofchristmascarols.com/
+https://github.com/bbloomf/christmas-carols/blob/master/LICENSE.md
+Source permission: author intends the collected public-domain material and authored code to remain in the public domain, and expressly permits reuse.
+New instrumental audio rendered for this project from the MIDI scores; no lyrics or commercial master recordings.
+Full per-track source manifest: docs/games/melody-sources.json in project source.

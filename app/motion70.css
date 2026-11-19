@@ -1,0 +1,20 @@
+/* Camera / TV / radio, centred lottery drum. One breathing ensemble. */
+.ensemble-hero .hero-camera{left:6%;right:auto;top:0;width:22%;bottom:auto}
+.ensemble-hero .hero-tv{left:34%;right:auto;top:-3%;width:32%;bottom:auto}
+.ensemble-hero .hero-radio{left:73%;right:auto;top:10%;width:21%;bottom:auto}
+.ensemble-hero .hero-drum{left:29%;right:auto;bottom:0;top:auto;width:42%}
+.ensemble-hero .hero-prop img{animation:none}
+.ensemble-hero .hero-prop{filter:drop-shadow(0 22px 17px #00556b30)}
+.ensemble-hero .cinema-copy button:focus-visible{outline:3px solid white;outline-offset:6px}
+.ensemble-hero .cinema-copy button:active{translate:0 3px}
+@media(max-width:700px){
+ .ny-site .ensemble-hero{height:800px;min-height:800px}
+ .ensemble-hero .cinema-image{inset:43% 6% 7%}
+ .ensemble-hero .hero-camera{left:-2%;top:0;width:27%;right:auto;bottom:auto}
+ .ensemble-hero .hero-tv{left:28%;top:-2%;width:43%;right:auto;bottom:auto}
+ .ensemble-hero .hero-radio{left:76%;top:12%;width:27%;right:auto;bottom:auto}
+ .ensemble-hero .hero-drum{left:13%;width:74%;bottom:0;top:auto;right:auto}
+ .ball-speech:after{right:14px;bottom:-9px;border-top:11px solid #dffaff;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:0}
+}
+@media(min-width:701px){.ny-site .ensemble-hero{height:1140px;min-height:1140px}.ensemble-hero .cinema-image{inset:36% 5% 4%}}
+@media(min-width:701px){.ensemble-hero .hero-camera{top:5%}}

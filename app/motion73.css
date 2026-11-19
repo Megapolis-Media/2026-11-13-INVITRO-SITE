@@ -1,0 +1,22 @@
+/* Compact hero fits above the dock on phones; assets retain their own silhouettes. */
+#radio .flight-contact{padding:0;border:0;cursor:pointer;pointer-events:auto}
+#radio .flight-contact:focus-visible{outline:3px solid #ff5601;outline-offset:8px}
+.ensemble-hero .hero-radio img{clip-path:none;mask-image:none;-webkit-mask-image:none;transform:none}
+@media(max-width:700px){
+ .ny-site .ensemble-hero{height:clamp(640px,calc(100svh - 78px),710px);min-height:640px}
+ .ensemble-hero .cinema-copy{top:86px}
+ .ensemble-hero .cinema-copy h1{font-size:clamp(27px,7.7vw,45px);margin-bottom:24px}
+ .ensemble-hero .cinema-image{inset:185px 5% 38px}
+ .ensemble-hero .hero-tv{left:45%;top:-1%;width:55%}
+ .ensemble-hero .hero-camera{left:6%;top:30%;width:32%}
+ .ensemble-hero .hero-radio{left:45%;top:34%;width:55%}
+ .ensemble-hero .hero-drum{left:17%;width:66%;bottom:0}
+ .ny-site .ny-header{padding-top:18px}
+ .ball-speech{font-size:11px;width:118px;padding:10px}
+}
+@media(min-width:701px){
+ .ny-site .ensemble-hero{height:850px;min-height:850px}
+ .ensemble-hero .cinema-image{top:180px;bottom:80px}
+ .ensemble-hero .hero-radio{width:33%;left:68%;top:46%}
+ .ensemble-hero .hero-drum{width:36%;left:34%}
+}

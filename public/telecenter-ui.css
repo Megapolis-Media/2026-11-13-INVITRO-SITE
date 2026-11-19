@@ -1,0 +1,283 @@
+/* Shared by the public page, portalled dialogs and the composition tools. */
+#telecenter {
+ --ui-control:48px;
+ --ui-icon:18px;
+ --ui-radius:12px;
+ --ui-panel-radius:24px;
+ --ui-gap:8px;
+ --ui-gutter:clamp(20px,5vw,80px);
+ --ui-max:1376px;
+ --ui-edge:max(var(--ui-gutter),calc((100% - var(--ui-max))/2));
+ --ui-section:clamp(40px,5vw,72px);
+ --ui-panel:clamp(20px,2.2vw,32px);
+ --ui-column-gap:clamp(24px,4vw,64px);
+ --ui-ink:#054c5b;
+ --ui-muted:#466873;
+ --ui-line:#a9cbd1;
+ --ui-paper:#fff;
+ --ui-solid:#005965;
+ --ui-orange:#ff681d;
+ --ui-shadow:0 2px 4px rgb(0 67 82 / .07);
+ --ui-panel-shadow:0 5px 18px rgb(0 67 82 / .07);
+ --ui-font:'Code Next',Arial,sans-serif;
+}
+#telecenter [data-ui-action],
+#telecenter :is(#radio,#promo) [data-ui-action] {
+ box-sizing:border-box;appearance:none;display:inline-flex;align-items:center;justify-content:center;
+ min-inline-size:var(--ui-control);min-block-size:var(--ui-control);height:auto;
+ padding:9px 16px;gap:var(--ui-gap);border:1px solid var(--action-line,var(--ui-line));
+ border-radius:var(--ui-radius);background:var(--action-bg,var(--ui-paper));color:var(--action-ink,var(--ui-ink));
+ box-shadow:var(--ui-shadow);font:650 .9375rem/1.18 var(--ui-font);letter-spacing:0;
+ text-transform:none;text-decoration:none;text-align:center;text-shadow:none;white-space:normal;
+ cursor:pointer;touch-action:manipulation;transform:none;filter:none;
+ transition:background-color .16s,border-color .16s,box-shadow .16s;
+}
+#telecenter [data-ui-action="solid"],
+#telecenter [data-ui-action][aria-pressed="true"]:not(.ball-switch),
+#telecenter [data-ui-action][aria-selected="true"] {
+ --action-bg:var(--ui-solid);--action-ink:white;--action-line:var(--ui-solid);
+}
+#telecenter [data-ui-action="accent"] {--action-bg:var(--ui-orange);--action-ink:#301607;--action-line:#ed6119}
+#telecenter [data-ui-action="icon"],#telecenter [data-ui-action="key"] {width:var(--ui-control);padding:0;flex-shrink:0}
+#telecenter [data-ui-action="icon"] {font-size:1.375rem}
+#telecenter [data-ui-action="option"] {justify-content:space-between;text-align:start}
+#telecenter [data-ui-action="disclosure"] {list-style:none}
+#telecenter [data-ui-action="disclosure"]::-webkit-details-marker {display:none}
+#telecenter [data-ui-action="disclosure"]::after {
+ content:'';width:7px;height:7px;border-right:2px solid;border-bottom:2px solid;transform:translateY(-2px) rotate(45deg);margin-inline-start:4px;
+}
+#telecenter details[open]>[data-ui-action="disclosure"]::after {transform:translateY(2px) rotate(225deg)}
+#telecenter [data-ui-action] svg,#telecenter :is(#radio,#promo) [data-ui-action] svg {
+ width:var(--ui-icon);height:var(--ui-icon);flex-shrink:0;stroke-width:1.8;
+}
+@media(hover:hover) {
+ #telecenter [data-ui-action]:not(:disabled):hover,
+ #telecenter :is(#radio,#promo) [data-ui-action]:not(:disabled):hover {
+  background:color-mix(in srgb,var(--action-bg,var(--ui-paper)) 92%,#00788a);border-color:#578e98;
+  transform:none;filter:none;box-shadow:0 2px 7px rgb(0 67 82 / .14);
+ }
+}
+#telecenter [data-ui-action]:active:not(:disabled) {box-shadow:inset 0 1px 3px #00384224}
+#telecenter [data-ui-action]:disabled {opacity:.52;box-shadow:none;cursor:default}
+#telecenter :is(.ny-site,.ny-modal,.kv-editor,.format-review) :is(button,a,summary,input,textarea,select,[tabindex="0"]):focus-visible,
+#telecenter [data-ui-action]:focus-within:has(input[type="file"]:focus-visible) {
+ outline:3px solid #00798c;outline-offset:3px;box-shadow:0 0 0 3px white;
+}
+#telecenter .ny-site .ui-short-label {display:none}
+
+/* The content edges are shared by the brand, artwork, headings, cards and forms. */
+#telecenter .ny-site {
+ --kv-left:max(var(--ui-edge),env(safe-area-inset-left));--kv-right:max(var(--ui-edge),env(safe-area-inset-right));
+ --stage-width:calc(100% - var(--kv-left) - var(--kv-right));--lane-gap:var(--ui-column-gap);
+}
+#telecenter .ny-header {padding-inline:var(--kv-left) var(--kv-right)}
+#telecenter .ny-header nav {align-items:center;gap:clamp(12px,2vw,32px)}
+#telecenter .ny-header nav a {display:inline-flex;align-items:center;min-height:var(--ui-control);font:650 .9375rem/1.2 var(--ui-font)}
+#telecenter .solo-hero .set-art,#telecenter #radio .ny-radio-object,#telecenter #promo .ny-promo-head {justify-self:end}
+#telecenter #radio .ny-section-heading,#telecenter #promo .promo-tv-stage {justify-self:start}
+#telecenter .ny-site .receiver-controls,#telecenter .ny-site .promo-tv-controls {
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;
+ width:min(100%,34rem);max-width:100%;gap:var(--ui-gap);margin:0 auto;padding:0;
+}
+#telecenter :is(#radio,#promo) :is(.receiver-controls,.promo-tv-controls) [data-ui-action] {width:100%;padding-inline:8px}
+#telecenter #radio .receiver-status {min-height:24px;padding-block:4px 0;font:600 .8125rem/1.3 var(--ui-font)}
+#telecenter .ny-site :is(#games,#orders,#tickets,#winners,.ny-footer),
+#telecenter .ny-site #promo:not(:has(.promo-tv-stage)) {
+ width:100%;max-width:none;margin:0;padding:var(--ui-section) var(--kv-right) var(--ui-section) var(--kv-left);
+ box-sizing:border-box;scroll-margin-top:16px;
+}
+#telecenter .ny-site :is(#orders,#tickets) {
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:center;gap:var(--ui-column-gap);
+ min-height:0;border:0;border-radius:0;box-shadow:none;
+}
+#telecenter .ny-site #orders {background:#dff1f4;color:var(--ui-ink)}
+#telecenter .ny-site #games {background:#f8fcfd}
+#telecenter .ny-site #tickets {background:#f3f9fa}
+#telecenter .ny-site :is(#games,#orders,#tickets,#winners) h2 {
+ font-size:clamp(2rem,3.75vw,3.875rem);line-height:1;letter-spacing:-.045em;margin:0;
+}
+#telecenter :is(#orders,#tickets) h2+p,#telecenter #games .studio-heading h2+p {
+ font:400 clamp(1rem,1.15vw,1.125rem)/1.45 var(--ui-font);color:var(--ui-muted);margin:12px 0 20px;max-width:45ch;
+}
+#telecenter #games .studio-heading {gap:var(--ui-column-gap);align-items:center;margin:0 0 var(--ui-panel)}
+#telecenter #games .studio-heading :is(h2+p,.ny-kicker) {margin-bottom:0}
+#telecenter #games .studio-heading .ny-kicker {color:var(--ui-muted);margin-block:0 12px;font-size:.8125rem;letter-spacing:.085em}
+#telecenter #games .studio-cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,24px);margin:0}
+#telecenter #games .studio-card {
+ display:flex;flex-direction:column;align-items:stretch;border:1px solid #c7dfe3;border-radius:var(--ui-panel-radius);background:white;
+ color:var(--ui-ink);box-shadow:var(--ui-panel-shadow);transform:none;overflow:hidden;
+}
+#telecenter #games .studio-card:is(:hover,.selected) {border-color:#338c98;box-shadow:0 5px 18px #00596722}
+#telecenter #games .studio-card-picture {width:100%;aspect-ratio:16/10;border-radius:0}
+#telecenter #games .studio-card-copy {flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:var(--ui-panel)}
+#telecenter #games .studio-card-copy :is(h3,p) {margin:0;min-height:0}
+#telecenter #games .studio-card-copy h3 {font-size:clamp(1.25rem,2vw,1.75rem);line-height:1.15;letter-spacing:-.035em}
+#telecenter #games .studio-card-copy p {padding-bottom:8px}
+#telecenter #games .studio-card-copy>[data-ui-action] {margin-top:auto;justify-content:center}
+#telecenter #games :is(.studio-score,.game-room),#telecenter .ny-site .ny-request {
+ border-radius:var(--ui-panel-radius);border:1px solid #c2dce0;box-shadow:var(--ui-panel-shadow);
+}
+#telecenter #games .studio-score {padding:16px 20px}
+#telecenter #games .game-room {margin-top:var(--ui-panel)}
+#telecenter #games :is(.game-room>header,.game-console) {padding:var(--ui-panel)}
+#telecenter #games .game-keyboard {display:flex;flex-wrap:wrap;gap:4px}
+#telecenter #games .game-console-footer {gap:var(--ui-gap);flex-wrap:wrap}
+#telecenter .ny-site .ny-request {padding:var(--ui-panel);background:var(--ui-paper);margin:0}
+/* Pair the request form with the artwork and keep the ticket and counter in a single band. */
+#telecenter .ny-site #orders {
+ grid-template-areas:"deck heading" "deck request";row-gap:14px;align-content:center;
+}
+#telecenter #orders .orders-heading {grid-area:heading;align-self:end;min-width:0}
+#telecenter #orders .orders-heading p {margin:8px 0 0}
+#telecenter #orders .orders-art {grid-area:deck;display:grid;justify-items:start;gap:12px;min-width:0}
+#telecenter #orders .kv-order-deck {
+ width:100%;height:auto;aspect-ratio:1.8;max-width:none;margin:0;padding:0;transform:none;
+ border:0;outline:0;border-radius:var(--ui-panel-radius);box-shadow:var(--ui-panel-shadow);overflow:hidden;
+}
+#telecenter #orders .orders-art button {margin:0}
+#telecenter #orders .ny-request {grid-area:request;align-self:start;width:100%}
+#telecenter .ny-site #orders .ny-request form {
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;
+}
+#telecenter #orders .ny-request form>:is(label:first-of-type,.ny-consent,button) {grid-column:1/-1}
+#telecenter .ny-site #tickets {
+ grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);grid-template-areas:"count count" "print info";
+ row-gap:clamp(18px,2.1vw,30px);padding-block:clamp(22px,2.5vw,38px);align-content:center;
+}
+#telecenter #tickets .ticket-info {grid-area:info;min-width:0;align-self:center;text-align:right}
+#telecenter #tickets .ticket-actions {display:flex;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap;gap:8px;margin-top:16px}
+#telecenter #tickets .ticket-actions>:is(details,button) {margin:0}
+#telecenter #tickets .ticket-actions details {max-width:100%}
+#telecenter #tickets .ticket-actions details[open] {flex-basis:100%}
+#telecenter #tickets .ticket-actions details p {max-width:40ch;margin:10px 0 0 auto;text-align:left;font:400 1rem/1.45 var(--ui-font)}
+#telecenter #tickets .ticket-print {grid-area:print;width:100%;min-width:0;margin:0;align-self:center}
+#telecenter #tickets .ticket-print figcaption {margin:0 0 7px;color:var(--ui-muted);font:650 .8125rem/1.25 var(--ui-font)}
+#telecenter #tickets .ticket-count {
+ grid-area:count;justify-self:center;display:grid;grid-template-columns:minmax(0,1fr);justify-items:center;gap:2px;
+ width:min(100%,36rem);margin:0;padding:0;
+}
+#telecenter #tickets .registration-counter {width:100%;height:auto;min-height:0;aspect-ratio:2.72;margin:0;container-type:inline-size}
+#telecenter #tickets .ticket-score-preview {
+ position:absolute;inset:0;display:flex;justify-content:center;align-items:center;color:var(--ui-ink);
+}
+#telecenter #tickets .registration-counter.is-ready .ticket-score-preview {display:none}
+#telecenter #tickets .ticket-score-preview img {width:32%;height:auto;margin-right:-5.5%;position:relative;z-index:1;filter:drop-shadow(0 3px 1px #00556425)}
+#telecenter #tickets .ticket-score-panel {
+ display:grid;justify-items:center;gap:1.15cqw;width:62%;box-sizing:border-box;padding:1.7cqw 2.45cqw;
+ background:linear-gradient(160deg,#fff,#e4eff0);border:.65cqw solid #90d3de;border-radius:2.2cqw;
+ box-shadow:inset 0 1px 2px white,0 1cqw 1.3cqw #00556428;
+}
+#telecenter #tickets .ticket-score-panel>span {font:750 clamp(.625rem,2.4cqw,1rem)/1 var(--ui-font);text-transform:uppercase;letter-spacing:.045em}
+#telecenter #tickets .ticket-score-digits {display:flex;gap:.7cqw;width:100%}
+#telecenter #tickets .ticket-score-digits b {
+ flex:1;min-width:0;text-align:center;font:750 8cqw/1.23 var(--ui-font);font-variant-numeric:tabular-nums;color:#00778b;
+ background:linear-gradient(to bottom,#fff 49%,#c0d5da 50%,#eff5f6 52%);border:1px solid #bdd6db;border-radius:.65cqw;
+}
+#telecenter #tickets .ticket-count-status {display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;text-align:center;color:var(--ui-muted);font:500 .8125rem/1.35 var(--ui-font)}
+#telecenter #tickets .ticket-count-status span:last-child {color:var(--ui-ink);font-weight:650}
+#telecenter .ny-site .ny-footer {
+ display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--ui-panel);min-height:0;
+ padding-block:var(--ui-panel) calc(var(--ui-panel) + var(--kv-dock-reserve,80px) + env(safe-area-inset-bottom));
+ background:#e4f1f3;border-top:1px solid #c7dde1;
+}
+#telecenter .ny-footer .footer-contacts {display:flex;align-items:center;flex-direction:row;flex-wrap:wrap;gap:var(--ui-gap)}
+#telecenter .ny-footer .footer-contacts a {margin:0}
+#telecenter .ny-footer>b::after {content:none}
+
+/* Order forms and dialogs share the same input and action rhythm. */
+#telecenter .ny-modal[data-slot="dialog-content"] {
+ box-sizing:border-box;width:min(36rem,calc(100% - 32px))!important;
+ max-height:calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+ padding:var(--ui-panel)!important;border-radius:var(--ui-panel-radius)!important;background:white!important;
+ border:1px solid #c2dce0;gap:12px;font-family:var(--ui-font);overscroll-behavior:contain;
+}
+#telecenter .ny-modal [data-slot="dialog-title"] {padding-right:44px;font-size:clamp(1.5rem,3vw,2rem);line-height:1.12}
+#telecenter .ny-modal [data-slot="dialog-description"] {font-size:1rem;line-height:1.45;color:var(--ui-muted);margin:0}
+#telecenter .ny-modal [data-slot="dialog-close"] {right:12px;top:12px;opacity:1}
+#telecenter :is(.ny-site,.ny-modal) :is(.form,.ny-request form) {display:grid;gap:16px}
+#telecenter :is(.ny-site,.ny-modal) :is(.form,.ny-request) label:not(.media-attach,.ny-consent,.check-line) {
+ display:grid;gap:6px;margin:0;font:650 .875rem/1.35 var(--ui-font);color:var(--ui-ink);
+}
+#telecenter :is(.ny-site,.ny-modal) :is(.form,.ny-request) :is(input:not([type=checkbox],[type=file],[type=radio]),textarea,select) {
+ box-sizing:border-box;width:100%;min-width:0;min-height:var(--ui-control);margin:0;padding:10px 12px;
+ border:1px solid var(--ui-line);border-radius:var(--ui-radius);font:400 1rem/1.4 var(--ui-font);background:white;color:var(--ui-ink);
+}
+#telecenter :is(.ny-site,.ny-modal) .form textarea {min-height:96px;resize:vertical}
+#telecenter :is(.ny-site,.ny-modal) :is(.ny-consent,.check-line) {
+ display:flex;gap:8px;align-items:flex-start;margin:0;color:var(--ui-muted);font:400 .875rem/1.4 var(--ui-font);
+}
+#telecenter :is(.ny-consent,.check-line) input[type=checkbox] {flex:none;margin:1px 0 0;accent-color:var(--ui-solid)}
+#telecenter :is(.ny-site,.ny-modal) :is(.media-actions,.greeting-tabs) {gap:var(--ui-gap);flex-wrap:wrap}
+#telecenter :is(.ny-site,.ny-modal) .form>[data-ui-action],#telecenter .ny-request form>[data-ui-action] {justify-self:start}
+#telecenter .ny-site .ny-dock {
+ display:flex;align-items:center;width:max-content;max-width:calc(100% - 24px);gap:var(--ui-gap);padding:6px;
+ border-radius:18px;background:#f5fafbf5;border:1px solid #add0d6;box-shadow:0 5px 20px #13485022;
+}
+#telecenter .ny-dock>[data-ui-action] {flex:0 0 auto;white-space:nowrap}
+#telecenter .ny-site .ny-dock-track {padding-inline:4px 8px}
+#telecenter .ny-dock .ball-switch[aria-pressed=true] {--action-line:#127789}
+#telecenter .format-review header {background:#edf7f8;border-color:var(--ui-line);gap:var(--ui-gap)}
+#telecenter .format-review :is(nav,.actions) {gap:4px}
+#telecenter .format-review select[data-ui-action] {appearance:auto}
+@media(max-width:1199px) {
+ #telecenter .ny-site :is(.receiver-controls,.promo-tv-controls) {width:max-content;grid-template-columns:repeat(3,var(--ui-control))}
+ #telecenter :is(#radio,#promo) :is(.receiver-controls,.promo-tv-controls) [data-ui-action] {position:relative;width:var(--ui-control);padding:0;gap:0}
+ #telecenter :is(#radio,#promo) :is(.receiver-controls,.promo-tv-controls) button span {
+  position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+ }
+}
+@media(max-width:760px) {
+ #telecenter .ny-site #orders {
+  grid-template-columns:minmax(0,.72fr) minmax(0,1fr);grid-template-areas:"deck heading" "request request";gap:16px;
+ }
+ #telecenter #orders .orders-heading {align-self:center}
+ #telecenter #orders .orders-art {gap:8px}
+ #telecenter #orders .orders-art button {justify-self:start}
+ #telecenter .ny-site #tickets {
+  grid-template-columns:minmax(0,1fr);grid-template-areas:"count" "info" "print";gap:16px;
+ }
+ #telecenter #tickets .ticket-count {width:min(100%,30rem)}
+ #telecenter #tickets .ticket-actions {margin-top:12px}
+ #telecenter .ny-site .ny-footer {grid-template-columns:auto minmax(0,1fr);gap:16px}
+ #telecenter .ny-footer .footer-contacts {grid-column:1/-1}
+}
+@media(max-width:650px) {
+ #telecenter {--ui-control:44px;--ui-gap:6px;--ui-gutter:clamp(16px,5vw,28px);--ui-column-gap:clamp(10px,3vw,18px);--ui-panel-radius:20px}
+ #telecenter .ny-header nav {display:none}
+ #telecenter #games .studio-heading {align-items:stretch}
+ #telecenter #games .studio-cards {grid-template-columns:minmax(0,1fr);gap:12px}
+ #telecenter #games .studio-card {display:grid;grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr)}
+ #telecenter #games .studio-card-picture {height:100%;min-height:144px;aspect-ratio:auto}
+ #telecenter #games .studio-card-picture .studio-card-number {display:none}
+ #telecenter #games .studio-card-count {inset:auto 6px 8px;text-align:center;padding:4px;font-size:.6875rem;line-height:1.2}
+ #telecenter #games .studio-card-copy {padding:14px;gap:6px;justify-content:center}
+ #telecenter #games .studio-card-copy p {padding:0}
+ #telecenter #games .studio-card-copy>[data-ui-action] {margin-top:4px;padding-inline:10px}
+ #telecenter #orders .orders-heading h2 {font-size:clamp(1.65rem,6.95vw,2.5rem)}
+ #telecenter #orders .orders-heading p {font-size:.9375rem;line-height:1.35}
+ #telecenter #orders .kv-order-deck {aspect-ratio:1.45;border-radius:var(--ui-radius)}
+ #telecenter .ny-site #orders .ny-request form {grid-template-columns:minmax(0,1fr)}
+ #telecenter .ny-site .ny-dock {
+  display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);justify-content:center;
+  width:max-content;min-width:min(100% - 24px,310px);max-width:calc(100% - 16px);gap:4px;padding:4px;
+ }
+ #telecenter .ny-site .ny-dock-track {display:none}
+ #telecenter .ny-site .ny-dock>[data-ui-action] {
+  width:100%;flex-direction:column;justify-content:center;gap:2px;padding:2px 6px;
+ }
+ #telecenter .ny-site .ny-dock>button span {font:650 .75rem/1.1 var(--ui-font)}
+ #telecenter .ny-site .ny-dock .ui-short-label {display:block}
+ #telecenter .ny-site .ny-dock .ui-full-label {display:none}
+ #telecenter .ny-footer .footer-contacts [data-ui-action] {font-size:.875rem;padding-inline:10px}
+ #telecenter .ny-request form>[data-ui-action],#telecenter .ny-modal .form>button[type="submit"],#telecenter .ny-modal .form>.primary {width:100%}
+ #telecenter .format-review header [data-ui-action] {font-size:.875rem;padding-inline:10px}
+}
+@media(prefers-reduced-motion:reduce) {
+ #telecenter [data-ui-action] {transition:none}
+}
+#telecenter .production-panel {max-width:1100px;margin:auto;padding:var(--ui-section) var(--ui-gutter);font-family:var(--ui-font);color:var(--ui-ink)}
+#telecenter .production-panel form {flex-wrap:wrap}
+#telecenter .production-panel input {min-width:0;min-height:var(--ui-control)}
+#telecenter .control [data-ui-action].active {--action-bg:var(--ui-solid);--action-ink:white;--action-line:var(--ui-solid)}
+#telecenter .control-nav [data-ui-action] {width:100%;justify-content:flex-start}
+#telecenter #contacts {scroll-margin-bottom:calc(var(--kv-dock-reserve,80px) + 12px)}

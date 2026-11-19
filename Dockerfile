@@ -27,7 +27,7 @@ COPY --from=build /app/dist ./dist
 COPY drizzle ./drizzle
 COPY scripts/sites-env.mjs scripts/start-docker.sh ./scripts/
 
-RUN mkdir /data && chown node:node /data
+RUN install -d -o node -g node /data /app/dist/server/.wrangler
 USER node
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=5s --start-period=40s \

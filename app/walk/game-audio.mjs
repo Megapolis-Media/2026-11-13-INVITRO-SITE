@@ -1,0 +1,7 @@
+// Original procedural effects. No voice impersonation or external recordings.
+export function createGameAudio(){
+ let ctx=null,bus=null,enabled=false;
+ function init(){if(!ctx){ctx=new AudioContext();bus=ctx.createGain();bus.gain.value=.16;bus.connect(ctx.destination)}if(ctx.state==='suspended')ctx.resume().catch(()=>{});}
+ function tone(freq,start,duration=.07,type='sine',level=.3){if(!enabled||!ctx)return;const o=ctx.createOscillator(),g=ctx.createGain();o.type=type;o.frequency.setValueAtTime(freq,start);g.gain.setValueAtTime(.0001,start);g.gain.exponentialRampToValueAtTime(level,start+.005);g.gain.exponentialRampToValueAtTime(.0001,start+duration);o.connect(g);g.connect(bus);o.start(start);o.stop(start+duration+.01);o.onended=()=>{o.disconnect();g.disconnect()};}
+ return{toggle(){enabled=!enabled;if(enabled){init();bus.gain.setValueAtTime(.16,ctx.currentTime)}else if(bus)bus.gain.setValueAtTime(0,ctx.currentTime);return enabled},play(kind){if(!enabled)return;init();const t=ctx.currentTime;if(kind==='spin'){let time=0;for(let i=0;i<29;i++){time+=.032+i*.0048;tone(750-i*9,t+time,.025,'triangle',.22)}}else if(kind==='win'){[523.25,659.25,783.99,1046.5].forEach((f,i)=>tone(f,t+i*.11,.30,'sine',.25))}else if(kind==='wrong'){tone(180,t,.15,'triangle',.18);tone(140,t+.14,.18,'triangle',.14)}else{tone(740,t,.10,'sine',.22);tone(980,t+.07,.12,'sine',.15)}},dispose(){enabled=false;ctx?.close().catch(()=>{});ctx=null;bus=null}};
+}

@@ -1,0 +1,88 @@
+/* 62 — one winter studio, measured contacts, quiet controls. */
+.ny-site main{background:radial-gradient(ellipse at 75% 15%,#b9e9f066,transparent 35%),linear-gradient(#e9f7fa,#e3f3f6 60%,#edf8fa)}
+.cinema-sticky{background:#00a0bc}
+.cinema-fade{height:24%;opacity:1;background:linear-gradient(transparent,#e9f7fa)}
+.cinema-image:before{background:linear-gradient(#00a0bc,transparent)!important}
+.cinema-shade{background:linear-gradient(180deg,#00a0bc,transparent 22%,transparent 88%,#e9f7fa)}
+.ny-site #radio,.ny-site #promo{padding-top:64px;padding-bottom:64px}
+.ny-site .ny-radio-object:before,.ny-site .promo-tv-stage:before{bottom:10%;height:10%;left:12%;right:12%;filter:blur(14px);background:#00556424}
+/* Scale light at the glass, retaining a dark cavity before the contact. */
+#radio .kv-radio .rigonda-glass{background:#002f3c;isolation:isolate}
+#radio .kv-radio .rigonda-print{opacity:calc(.43 + var(--journey-power,0)*.57);transition:opacity .5s;filter:none}
+#radio .kv-radio .kv-lamplight{background:radial-gradient(ellipse at 0 50%,#ffc36bc9,transparent 48%),radial-gradient(ellipse at 100% 50%,#ffc36bc9,transparent 48%);opacity:var(--journey-power,0);transition:opacity .5s}
+#radio .kv-radio:not(.is-playing):not(.is-tuning) .kv-radio-plate{opacity:0}
+#radio .kv-radio .rigonda-front-glass{background:linear-gradient(112deg,#d1f7ff09 5%,transparent 21%,#fff2 22%,transparent 23%);box-shadow:inset 0 5px 10px #00151c99,inset 0 -2px 4px #8ce0ed33}
+.ny-site .ny-now{box-shadow:none;border:1px solid #ffffffa6;font-size:13px;max-width:380px}
+/* Keep the TV large enough for the video and its physical reaction to read. */
+.ny-site .promo-tv-stage{width:126%;margin-left:-13%}
+.ny-site .promo-tv-controls{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:8px;padding:0 12%;margin-top:-4%}
+.ny-site .promo-tv-controls button{min-width:0;min-height:44px;padding:10px 8px;font-size:12px;gap:6px;justify-content:center;white-space:nowrap}
+.ny-site .promo-tv-object{transform-origin:51% 85%}
+/* True geometry shares the saturated KV colour and occupies the frame. */
+.drum-model{background:radial-gradient(ellipse at 48% 65%,#c6edf5 0,#7ed3e9 42%,#08add4 85%)}
+.drum-model:after{box-shadow:inset 0 -8px 20px #d7f2f933}
+.ny-site .studio-card-picture{mask-image:none;border-radius:24px 24px 0 0}
+.ny-site .studio-cards{margin-top:42px;gap:48px}
+.ny-site .studio-card{box-shadow:0 5px 0 #abd1db77,0 18px 32px #00556412}
+.ny-site .studio-card-copy>span{position:relative;justify-content:space-between;gap:14px}
+.game-studios[data-ball-invite=true] .studio-card:first-child .studio-card-copy>span:before{content:none}
+.game-studios[data-ball-invite=true] .studio-card:first-child .studio-card-copy b{box-shadow:0 3px 0 #bc3e05,0 0 18px #ff9e5766}
+/* The original photographed tonearm stays intact. Only a light passes over the grooves. */
+.vinyl-optical-sheen{left:28.2%;top:32.5%;width:35%;height:21%;border-radius:50%;overflow:hidden;opacity:calc(var(--vinyl-power,0)*.28);mix-blend-mode:screen}
+.vinyl-optical-sheen:after{content:'';position:absolute;inset:-35% 0;background:conic-gradient(transparent 0 75deg,#ccf5ff 90deg,transparent 108deg 260deg,#c9f8ff 280deg,transparent 300deg);border-radius:50%;transform:rotate(var(--vinyl-turn,0deg))}
+.vinyl-contact-key{left:61.8%;top:74%;width:3.5%;height:3%;border-radius:50%;background:radial-gradient(at 30% 20%,#ffdbaa,#ff5601 70%);border:1px solid #ffe3b3;box-shadow:0 1px 0 #9b370f,inset 0 1px 1px #fff9;transform:translateY(calc(var(--vinyl-key,0)*1px));opacity:calc(.6 + var(--vinyl-power,0)*.4)}
+.flying-letter{transform:translate(calc(var(--mail-open,0)*var(--letter-x)),calc(var(--mail-open,0)*var(--letter-y))) rotate(calc(var(--mail-open,0)*var(--letter-r))) scale(calc(.35 + var(--mail-open,0)*.65))}
+.letter-0{--letter-x:-100%;--letter-y:70%;--letter-r:-14deg}.letter-1{--letter-x:-160%;--letter-y:80%;--letter-r:2deg}.letter-2{--letter-x:-215%;--letter-y:65%;--letter-r:12deg}
+/* A studio desk replaces the isolated saturated form panel. */
+.ny-site .ny-orders{background:radial-gradient(ellipse at 20% 55%,#b4e3ecaa,transparent 60%),linear-gradient(145deg,#effaff,#d5edf3);color:#005564;border:1px solid #fff;box-shadow:0 8px 0 #8fbac633,0 28px 50px #00556412}
+.ny-site .ny-orders h2,.ny-site .ny-orders p,.ny-site .ny-orders .ny-kicker{color:#005564}
+.ny-site .ny-request{background:linear-gradient(135deg,#fff,#e6f5fa);border:1px solid #fff;box-shadow:0 7px 0 #a6cbd5,0 20px 28px #00556418;transform:none}
+.ny-site .ny-record{border:8px solid #d2e9ef;outline:2px solid #7ca9b7;box-shadow:0 8px 0 #537e8d,10px 20px 24px #004e6433;transform:perspective(700px) rotateX(28deg) rotateZ(-12deg)}
+.ny-site .ny-ticket-stack{padding:30px 12px;background:radial-gradient(ellipse at 50% 65%,#a6dce744,transparent 70%);border-radius:32px}
+.ny-site .registration-counter,.ny-site .registration-counter-fallback{background:transparent}
+.ny-site .ny-counter .registration-counter{height:230px;min-height:160px}
+.ny-site .ny-counter{text-align:center}
+.ny-site .ny-ticket{transform:rotate(-5deg);margin-bottom:24px}
+.ny-site .ny-footer{min-height:240px;padding-bottom:130px}
+.ny-site .ny-footer:after{display:none}
+.journey-home{position:absolute;left:calc(84% - 46px);top:56%;width:92px;height:18px;border-radius:50%;border:3px solid #d9f9ff;background:radial-gradient(ellipse,#00596b,#8cd4df 70%);box-shadow:0 5px 0 #578b9b,0 12px 15px #00556422}
+.ny-footer[data-ball-home=true] .journey-home{box-shadow:0 5px 0 #578b9b,0 0 18px #ffb77366}
+.flight-orb:after{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(at 20% 75%,#ffc884,transparent 60%);opacity:calc(var(--ball-warm,0)*.35);mix-blend-mode:screen}
+.ny-site .world-track{opacity:.28}
+@media(max-width:700px){
+ .ny-header{height:70px;padding-left:6%;padding-right:6%}.ny-brand b{font-size:20px}.ny-header-ticket{font-size:11px;padding:10px 12px}
+ .cinema-sticky{min-height:640px}.cinema-copy{top:15%;left:7%;width:86%}.cinema-copy h1{font-size:clamp(34px,8.4vw,54px);line-height:.95}.cinema-copy p{font-size:16px;line-height:1.35;margin:17px 0}.cinema-image{inset:39% 0 0}
+ .ny-site #radio,.ny-site #promo{padding-top:38px;padding-bottom:40px}
+ .ny-site #radio .ny-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ny-site #radio .ny-actions>.ny-button{grid-column:1/-1;justify-self:start}.ny-site #radio .ny-actions>.ny-text-button{font-size:12px;padding:10px 9px;gap:5px;justify-content:center}
+ .ny-site #radio .ny-section-heading{padding-right:0}.ny-site #radio .ny-section-heading h2{padding-right:44px}
+ .ny-site .ny-radio-object{margin-top:22px}.ny-site .ny-now{max-width:88%;padding:12px 14px}
+ .ny-site .promo-tv-stage{width:calc(100% + 48px);margin:10px -24px 0}.ny-site .promo-tv-object{width:120%;margin-left:-10%;margin-top:0}
+ .ny-site .promo-tv-controls{margin-top:-2%;padding:0 20px;gap:6px}.ny-site .promo-tv-controls button{font-size:10px;padding:9px 5px;min-height:42px;gap:4px}.ny-site .promo-tv-controls svg{width:15px;flex-shrink:0}
+ .ny-site .ny-games{padding-top:44px;padding-bottom:46px}.ny-site .studio-heading{gap:20px}.ny-site .studio-cards{margin-top:32px;gap:36px;margin-left:5px;margin-right:5px}
+ .ny-site .studio-card-copy{padding:22px 24px 26px}.ny-site .studio-card-copy h3{font-size:28px}.ny-site .studio-card-copy>span{margin-top:18px}
+ .ny-site .studio-score{padding:18px 22px}.ny-site .ny-orders{margin:0 16px;padding:34px 25px;gap:30px}.ny-site .ny-record{width:150px;height:150px}
+ .ny-site .ny-ticket-section{padding-top:52px}.ny-site .ny-counter .registration-counter{height:190px}.ny-site .ny-ticket-stack{padding:20px 0}.ny-site .ny-ticket{transform:rotate(-3deg)}
+ .ny-site .ny-dock{padding:5px;gap:4px;border-radius:19px;bottom:calc(8px + env(safe-area-inset-bottom,0px));max-width:calc(100% - 20px)}
+ .ny-site .ny-dock>button{min-height:56px;padding:7px 6px;border-radius:14px;gap:5px}.ny-site .ny-dock>button span{font-size:9px}.ny-site .ny-dock>button svg{width:18px;height:18px}
+ .ny-site .ny-footer{min-height:230px;padding-bottom:120px}.journey-home{left:calc(84% - 32px);width:64px;height:14px;top:49%}
+ .game-room{scroll-margin-top:70px}.game-console{padding-bottom:90px}
+}
+@media(prefers-reduced-motion:reduce){.flight-orb,.journey-home{display:none}.ny-site .ny-record{transform:none}}
+
+/* Constrain enlarged TV art without adding a horizontal scroll axis. */
+.ny-site{overflow-x:clip}
+.ny-site .studio-card{padding:0;min-height:0}
+/* The dial needs readable physical space on tablets, not a narrow half-column. */
+@media(min-width:701px) and (max-width:1000px){
+ .ny-site .ny-radio,.ny-site .ny-promo{display:grid;grid-template-columns:1fr;gap:26px}
+ .ny-site .ny-radio-object{max-width:720px;width:100%;margin:auto}
+ .ny-site .ny-radio .ny-actions{display:flex;flex-wrap:wrap;gap:12px}
+ .ny-site .ny-promo-head{display:flex;justify-content:space-between;gap:24px;align-items:end}
+ .ny-site .promo-tv-stage{width:100%;margin:0}
+ .ny-site .cinema-copy{grid-template-columns:1fr 190px;gap:25px}
+ .ny-site .cinema-copy h1{font-size:44px}
+}
+#radio .kv-radio .rigonda-station{font-size:clamp(6px,1.85cqw,23px);line-height:1.04}
+#radio .kv-radio .rigonda-indices{font-size:clamp(6px,1.55cqw,20px)}
+
+.radio-status-slot{height:60px;position:relative;margin-top:10px}.ny-site .radio-status-slot .radio-unlock{position:absolute;inset:0;margin:0;font-size:12px!important;line-height:1.4;padding:10px 12px}

@@ -1,0 +1,281 @@
+/* Header, copy and artwork use the same optical margins, including on notched screens. */
+.ny-site:has(.set-hero) {
+  --kv-gutter: clamp(20px, 5vw, 96px);
+  --kv-edge: max(var(--kv-gutter), calc((100% - 1584px) / 2));
+  --kv-left: max(var(--kv-edge), env(safe-area-inset-left));
+  --kv-right: max(var(--kv-edge), env(safe-area-inset-right));
+  --kv-header: clamp(62px, 8svh, 90px);
+  --kv-bottom: calc(var(--kv-dock-reserve, 80px) + clamp(10px, 2svh, 24px));
+}
+.ny-site:has(.set-hero) .ny-header {
+  height: calc(var(--kv-header) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) var(--kv-right) 0 var(--kv-left);
+}
+.ny-site .set-hero {
+  --ox:var(--desktop-ox); --oy:var(--desktop-oy); --lx:var(--desktop-lx); --ly:var(--desktop-ly); --diam:var(--desktop-diam);
+  --ratio:1536/972;
+  position:relative; isolation:isolate; height:auto; min-height:0; overflow:clip;
+  background:radial-gradient(ellipse at 76% 51%,#85e8ed73,transparent 48%),
+    linear-gradient(163deg,#00899d 2%,#009eb3 39%,#2dbbca 65%,#b3e7ed 88%,#e8f6f9 100%);
+}
+.ny-site .set-hero::before {display:none}
+.ny-site .set-hero::after {inset:56% 0 0;opacity:.15;mask-image:linear-gradient(transparent,#0008 45%,transparent)}
+.set-frame {
+  position:relative; display:grid; align-items:center;
+  grid-template-columns:minmax(0, .9fr) minmax(0, 1.36fr);
+  column-gap:clamp(24px,3vw,56px);
+  min-height:100svh;
+  padding:calc(var(--kv-header) + env(safe-area-inset-top) + 16px) var(--kv-right) var(--kv-bottom) var(--kv-left);
+}
+.set-copy {position:relative;min-width:0;z-index:1;color:white}
+.set-date {display:flex;align-items:center;gap:.68em;color:white;font:700 clamp(11px,1vw,16px)/1.3 'Code Next',Arial,sans-serif;letter-spacing:.105em;text-transform:uppercase}
+.set-date i {width:.72em;aspect-ratio:1;border-radius:50%;background:#ff610e}
+.ny-site .set-copy h1 {
+  white-space:pre-line;color:white;margin:clamp(14px,1.4vw,24px) 0 clamp(22px,2.2vw,36px);
+  font:750 clamp(37px,4.8vw,84px)/1.015 'INVITRO Sans','Code Next',Arial,sans-serif;letter-spacing:-.036em;
+}
+.ny-site .set-copy .ny-button {min-height:clamp(46px,4vw,62px);padding:12px clamp(23px,2vw,36px);border-radius:17px;font-size:clamp(16px,1.34vw,21px)}
+.set-copy button:focus-visible {outline:3px solid white;outline-offset:5px}
+.set-art {position:relative;min-width:0;margin-inline:-1.8% -5.2%;display:grid;place-items:center;perspective:1250px;touch-action:pan-y}
+.set-tableau {position:relative;width:min(100%,calc((100svh - var(--kv-header) - var(--kv-bottom) - 24px) * 1.58));transform-origin:50% 78%}
+.set-breathe {position:relative;aspect-ratio:var(--ratio);user-select:none}
+.set-breathe picture,.set-plate {display:block;width:100%;height:100%}
+.set-plate {object-fit:contain;pointer-events:none;-webkit-user-drag:none}
+.set-breathe :is(.hero-outlet,.hero-lip,[data-orb-gauge],.rest-orb) {position:absolute;pointer-events:none;width:0;height:0}
+.set-breathe .hero-outlet {left:var(--ox);top:var(--oy)}
+.set-breathe .hero-lip {left:var(--lx);top:var(--ly)}
+.set-breathe [data-orb-gauge] {width:var(--diam)}
+.set-breathe .rest-orb {
+  left:var(--ox);top:var(--oy);width:var(--diam);height:auto;aspect-ratio:1;transform:translate(-50%,-100%);border-radius:50%;
+  box-shadow:inset -1px -2px 3px #03647b44,0 1px 2px #253e4988;
+  background:radial-gradient(circle at 31% 21%,white,#dcffff 7%,#56ebf0 20%,#00b6c4 52%,#006a84 94%);
+}
+.set-hero[data-actor=visible] .rest-orb {visibility:hidden}
+.flight-speech {position:absolute;top:0;left:0;color:#003e4c;font:700 clamp(11px,1vw,16px)/1.13 'Code Next',Arial,sans-serif;white-space:pre-line;pointer-events:none;text-shadow:0 0 2px #fff,0 1px 4px #e9ffff}
+.flight-speech[hidden] {display:none}
+@media (max-width:1099px), (orientation:portrait) {
+  .ny-site .set-hero {--ratio:1120/792;--ox:var(--tablet-ox);--oy:var(--tablet-oy);--lx:var(--tablet-lx);--ly:var(--tablet-ly);--diam:var(--tablet-diam)}
+  .set-tableau {width:min(100%,calc((100svh - var(--kv-header) - var(--kv-bottom) - 16px) * 1.414))}
+}
+@media (orientation:portrait), (max-width:650px) {
+  .set-frame {
+    grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,.65fr) auto minmax(0,.27fr) auto minmax(0,.74fr);gap:0;
+    padding-top:calc(var(--kv-header) + env(safe-area-inset-top) + clamp(16px,3.2svh,40px));
+  }
+  .set-copy {grid-row:2;text-align:center}
+  .set-date {justify-content:center}
+  .ny-site .set-copy h1 {font-size:clamp(41px,7.1vw,82px);margin:clamp(12px,1.6svh,20px) 0 clamp(18px,2.2svh,28px)}
+  .set-art {grid-row:4;margin-inline:-2.4%;margin-top:clamp(12px,2.4svh,32px)}
+  .set-tableau {width:min(100%,960px,max(48vw,calc((100svh - var(--kv-bottom) - 320px) * 1.414)))}
+}
+@media (max-width:650px) {
+  .ny-site:has(.set-hero) {--kv-gutter:clamp(18px,5.8vw,30px);--kv-header:clamp(54px,8svh,69px)}
+  .ny-site .set-hero {--ratio:990/820;--ox:var(--mobile-ox);--oy:var(--mobile-oy);--lx:var(--mobile-lx);--ly:var(--mobile-ly);--diam:var(--mobile-diam)}
+  .set-copy {text-align:left}
+  .set-date {justify-content:flex-start;font-size:clamp(10px,2.8vw,14px)}
+  .ny-site .set-copy h1 {font-size:clamp(30px,9.75vw,57px);margin:12px 0 20px;letter-spacing:-.031em}
+  .ny-site .set-copy .ny-button {min-height:44px;padding:10px 22px;border-radius:15px;font-size:clamp(15px,3.7vw,18px)}
+  .set-art {margin-inline:calc(-.82 * var(--kv-gutter));margin-top:clamp(12px,2.5svh,24px)}
+  .set-tableau {width:min(100%,max(58vw,calc((100svh - var(--kv-bottom) - 268px) * 1.207)))}
+  .flight-speech {font-size:clamp(10px,2.72vw,15px)}
+}
+@media (max-height:540px) and (orientation:landscape) {
+  .ny-site:has(.set-hero) {--kv-header:44px;--kv-bottom:calc(var(--kv-dock-reserve,64px) + 6px)}
+  .set-frame {grid-template-columns:minmax(0,.92fr) minmax(0,1.2fr);grid-template-rows:auto;gap:16px;padding-top:calc(var(--kv-header) + env(safe-area-inset-top) + 8px)}
+  .set-copy,.set-art {grid-row:auto;text-align:left;margin-top:0}
+  .set-date {justify-content:flex-start;font-size:10px}
+  .ny-site .set-copy h1 {font-size:clamp(23px,4vw,44px);margin:9px 0 14px}
+  .ny-site .set-copy .ny-button {min-height:44px;font-size:15px;padding:8px 20px}
+  .set-tableau {width:min(100%,calc((100svh - var(--kv-header) - var(--kv-bottom) - 8px) * 1.2))}
+}
+@media (prefers-reduced-motion:reduce) {.set-tableau {transform:none!important}}
+.set-hero[data-released=true] .rest-orb {left:var(--lx);top:var(--ly)}
+
+.solo-hero {--drum-x:var(--desktop-x);--drum-bottom:var(--desktop-bottom);--drum-width:var(--desktop-width)}
+.solo-drum {position:absolute;left:var(--drum-x);bottom:var(--drum-bottom);width:var(--drum-width);transform:translateX(-50%);aspect-ratio:1060/989;isolation:isolate}
+.solo-drum::before {content:"";position:absolute;z-index:-1;bottom:-1%;left:4%;width:95%;height:11%;border-radius:50%;background:radial-gradient(ellipse at center,#075a6b49,transparent 70%);filter:blur(3px)}
+@media (max-width:1099px), (orientation:portrait) {.solo-hero {--drum-x:var(--tablet-x);--drum-bottom:var(--tablet-bottom);--drum-width:var(--tablet-width)}}
+@media (max-width:650px) {.solo-hero {--drum-x:var(--mobile-x);--drum-bottom:var(--mobile-bottom);--drum-width:var(--mobile-width)}}
+
+/* The second instrument sits under the chute. Its controls share the cabinet axis. */
+.ny-site #radio.ny-radio {
+  position:relative; z-index:1; max-width:1700px; margin-inline:auto;
+  margin-top:0; padding:0 var(--kv-right,5%) clamp(4px,1.2svh,12px) var(--kv-left,5%);
+  grid-template-columns:minmax(0,.9fr) minmax(0,1.36fr); gap:clamp(24px,3vw,56px);
+}
+.ny-site #radio .ny-radio-object {width:100%;max-width:790px;margin:0 auto;align-self:start}
+.ny-site #radio .ny-radio-object::before {display:none}
+.ny-site #radio .ny-section-heading {align-self:start;padding:0;max-width:16em;font-size:clamp(36px,3.8vw,64px)}
+.ny-site #radio .ny-section-heading h2 {font-size:inherit;line-height:1;letter-spacing:-.045em;text-transform:uppercase}
+.ny-site #radio .ny-section-heading p {font:400 clamp(15px,1.1vw,19px)/1.4 'Code Next',Arial,sans-serif;margin:16px 0 0}
+#radio .receiver-contact-point {position:absolute;left:87.2%;top:33.5%;width:1px;height:1px;pointer-events:none}
+body .ny-site #radio .rigonda-title {
+  top:16.6%;font:700 clamp(10px,2cqw,18px)/1 'Code Next',Arial,sans-serif!important;
+  letter-spacing:.17em;color:#f5ffff;text-shadow:0 1px 2px #00505c;
+}
+.ny-site #radio .rigonda-object {transform-origin:50% 86%}
+#radio .receiver-controls {display:flex;justify-content:center;align-items:center;gap:clamp(4px,.8vw,12px);margin:-2% auto 0;position:relative}
+#radio .receiver-controls button {display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  appearance:none;background:transparent;color:#005464;border:1px solid #80adb94a;border-radius:24px;
+  font:650 clamp(12px,.92vw,15px)/1.15 'Code Next',Arial,sans-serif;min-height:44px;
+  padding:6px clamp(10px,1.25vw,20px);box-shadow:none;white-space:nowrap}
+#radio .receiver-controls button:hover {background:#fff9}
+#radio .receiver-controls .receiver-play {background:#005564;color:#fff;border-color:#005564}
+#radio .receiver-controls .receiver-play:hover {background:#006e80}
+#radio .receiver-controls svg {width:16px;height:16px;stroke-width:1.75;flex-shrink:0}
+#radio .receiver-status {font:600 12px/1.35 'Code Next',Arial,sans-serif;color:#005564;text-align:center;min-height:26px;padding-top:8px}
+#radio[data-flight-lit=true] .rigonda-glass .kv-lamplight,
+#radio .kv-radio.is-playing .kv-lamplight {opacity:1;transition:opacity 65ms}
+.ny-site #promo.ny-promo {padding-top:clamp(12px,3svh,40px)}
+@media (orientation:portrait), (max-width:700px) {
+ .ny-site #radio.ny-radio {display:flex;flex-direction:column;gap:0;margin-top:0;padding-inline:var(--kv-gutter,18px)}
+ .ny-site #radio .ny-radio-object {order:1;width:min(100%,700px)}
+ .ny-site #radio .ny-section-heading {order:0;text-align:left;align-self:stretch;font-size:clamp(27px,5.9vw,46px);margin:0 0 clamp(4px,1.2svh,14px)}
+ .ny-site #radio .ny-section-heading p {margin:6px 0 0;font-size:14px}
+ .ny-site #radio .receiver-controls {gap:4px}
+ .ny-site #radio .receiver-controls button {padding-inline:clamp(6px,1.8vw,17px);font-size:clamp(10px,2.85vw,14px);gap:4px}
+}
+@media (max-width:360px) {
+ #radio .receiver-controls svg {width:14px;height:14px}
+}
+
+.ny-site.without-hero #radio.ny-radio {margin-top:0;padding-top:var(--kv-header,86px)}
+
+/* The headline occupies the optical gap above the receiver. There is no scroll
+   runway after the controls: the following set begins on the same baseline grid. */
+.ny-site:has(.solo-hero) .receiver-rail {position:relative;margin-top:clamp(-76px,-6svh,-20px)}
+.ny-site .receiver-rail #radio.ny-radio {position:relative;top:auto;transform:none}
+@media (min-width:851px) and (orientation:landscape) {
+ .ny-site .receiver-rail #radio.ny-radio {display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.36fr);align-items:start}
+ .ny-site #radio .ny-section-heading {padding-top:clamp(4px,1vw,18px)}
+ .ny-site #radio .ny-radio-object {padding-top:clamp(26px,4.8svh,56px)}
+}
+@media (orientation:portrait),(max-width:850px) {
+ .ny-site:has(.solo-hero) .receiver-rail {margin-top:clamp(-62px,-6svh,-18px)}
+ .ny-site .receiver-rail #radio.ny-radio {display:flex;flex-direction:column;align-items:center;gap:0;padding-inline:var(--kv-gutter,20px)}
+ .ny-site #radio .ny-section-heading {order:0;text-align:left;align-self:stretch;max-width:700px;width:100%;margin-inline:auto}
+ .ny-site #radio .ny-radio-object {order:1;max-width:700px;width:100%;margin-inline:auto}
+ .ny-site #promo.ny-promo {padding-top:clamp(16px,3.3svh,36px)}
+ .ny-site #promo .ny-promo-head p {margin:8px 0 0}
+}
+.ny-site .solo-hero {
+ background:linear-gradient(to top,#e5f4f7 0%,#e5f4f700 27%),
+  radial-gradient(ellipse at 76% 51%,#85e8ed73,transparent 48%),
+  linear-gradient(163deg,#00899d 2%,#009eb3 39%,#2dbbca 65%,#b3e7ed 88%,#e5f4f7);
+}
+#radio .kv-radio :is(.rigonda-body,.kv-radio-plate) {
+ mask:url('/hero-v86/receiver-mask.svg') center / 100% 100% no-repeat;
+}
+#radio .kv-radio .rigonda-object::before {
+ content:'';position:absolute;z-index:-1;top:82.5%;left:3%;width:94%;height:8%;pointer-events:none;
+ background:radial-gradient(ellipse closest-side,#17526255,transparent);border-radius:50%;
+}
+#radio .receiver-controls {margin-top:-5%}
+
+/* Real side walls and recessed backs, scaled to their own device rather than the viewport. */
+#radio .kv-radio,.ny-site .promo-tv-object {container-type:inline-size}
+#radio .kv-radio .rigonda-object,.ny-site #promo .promo-tv-stage .promo-tv-rig {
+ isolation:auto;perspective:none;transform-style:preserve-3d;transform-origin:48% 86% -6cqw;
+ transform:perspective(240cqw) rotateY(-3.2deg) rotateX(-1.4deg);
+}
+.ny-site #promo .promo-tv-stage .promo-tv-rig {transform-origin:49% 90% -9cqw;transform:perspective(240cqw) rotateY(-4deg) rotateX(-1.4deg)}
+.cabinet-volume {position:absolute;inset:0;pointer-events:none;transform-style:preserve-3d}
+.cabinet-facet,.cabinet-back {position:absolute;display:block;pointer-events:none;backface-visibility:visible}
+.cabinet-facet {transform-origin:0 0;background:linear-gradient(0deg,#075867 0%,hsl(188 66% var(--enamel-light)) 14% 85%,#69c9d2 96%,#108a9a)}
+.cabinet-back {background:linear-gradient(160deg,#257480,#095461)}
+.cabinet-facet.vented::after {content:'';position:absolute;inset:12% 16% 52%;border-radius:3px;
+ background:repeating-linear-gradient(90deg,#073d46 0 3%,#4695a1 3.5% 4.5%,transparent 5% 10%)}
+#radio .kv-radio .rigonda-object::before,#radio .kv-radio .rigonda-object::after {display:none}
+#radio .kv-radio {position:relative}
+#radio .kv-radio::before {content:'';position:absolute;left:8%;width:84%;top:82.5%;height:8%;border-radius:50%;background:radial-gradient(ellipse closest-side,#174e5d56,transparent)}
+#radio .receiver-contact-point {z-index:3;pointer-events:none}
+#radio .receiver-contact-point::after {
+ content:'';position:absolute;width:clamp(18px,6cqw,50px);aspect-ratio:1.5;border-radius:50%;
+ background:radial-gradient(ellipse,#07303dd1,transparent 72%);opacity:calc(var(--ball-near,0)*.63);
+ transform:translate(-39%,-20%) rotate(-18deg);pointer-events:none;
+}
+
+.ny-site #radio .receiver-contact-point {left:94.25%;top:33.5%}
+.ny-site #promo .promo-tv-contact,.ny-site #promo .cabinet-entry-light {
+ left:50.25%;top:16.25%;transform:none;
+}
+.ny-site #promo .cabinet-entry-light {width:5.8%;height:.8%;transform:translate(-50%,-50%);
+ background:radial-gradient(ellipse,#d8ffff,#57c8d0 38%,transparent 75%);box-shadow:none}
+
+@media (max-width:650px) {
+ .ny-site #radio .receiver-controls {width:max-content;max-width:100%;margin-inline:0;gap:4px}
+ .ny-site #radio .receiver-controls button:not(.receiver-play) {position:relative;min-width:44px;padding:0}
+ .ny-site #radio .receiver-controls button:not(.receiver-play) span {
+  position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+ }
+}
+
+/* Width means visible enamel, not the transparent rectangle in each source.
+   Visible widths in the renders: drum 95.6%, radio 89.3%, television 65.4%. */
+.ny-site {
+ --stage-width:min(1376px,calc(100% - var(--kv-left,5vw) - var(--kv-right,5vw)));
+ --prop:min(39vw,572px,68svh);
+ --lane-gap:clamp(18px,4vw,72px);
+ --row-gap:clamp(12px,2svh,24px);
+}
+.ny-site .solo-hero .set-frame,
+.ny-site .receiver-rail #radio.ny-radio,
+.ny-site #promo.ny-promo:has(.promo-tv-stage) {
+ width:var(--stage-width);max-width:none;margin-inline:auto;display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto;
+ column-gap:var(--lane-gap);row-gap:0;align-items:center;
+}
+.ny-site .solo-hero .set-frame {
+ min-height:0;padding:calc(var(--kv-header) + env(safe-area-inset-top) + clamp(12px,2.6svh,28px)) 0 var(--row-gap);
+}
+.ny-site .solo-hero .set-copy {grid-area:1/1;text-align:left}
+.ny-site .solo-hero .set-date {justify-content:flex-start}
+.ny-site .solo-hero .set-art {grid-area:1/2;display:block;justify-self:center;width:var(--prop);margin:0;perspective:none}
+.ny-site .solo-hero .set-tableau {width:calc(100% / .956);margin-left:-3.55%}
+.ny-site .solo-hero .set-breathe {aspect-ratio:1060/989;transform:none}
+.ny-site .solo-hero .solo-drum {inset:0;width:100%;transform:none}
+
+.ny-site:has(.solo-hero) .receiver-rail {margin-top:0}
+.ny-site .receiver-rail #radio.ny-radio {padding:var(--row-gap) 0 0}
+.ny-site .receiver-rail #radio .ny-radio-object {grid-area:1/1;align-self:center;justify-self:center;width:var(--prop);max-width:none;margin:0;padding:0}
+.ny-site #radio .ny-radio-object>.kv-radio {width:calc(100% / .893);max-width:none;margin:-7.5% 0 -6% -5.8%}
+.ny-site #radio .receiver-controls {width:max-content;max-width:100%;justify-content:center;gap:5px;margin:0 auto}
+.ny-site #radio .receiver-controls button {padding-inline:clamp(8px,.85vw,16px)}
+.ny-site #radio .receiver-status {width:100%;min-height:20px;padding-top:3px}
+.ny-site .receiver-rail #radio .ny-section-heading {grid-area:1/2;align-self:center;justify-self:center;width:var(--prop);max-width:100%;margin:0;padding:0}
+.ny-site #radio .ny-section-heading h2,.ny-site #promo:has(.promo-tv-stage) .ny-promo-head h2 {
+ font-size:clamp(30px,3.75vw,62px);line-height:1;letter-spacing:-.045em;margin:0;padding:0;text-wrap:balance;
+}
+.ny-site #radio .ny-section-heading p,.ny-site #promo:has(.promo-tv-stage) .ny-promo-head p {
+ margin:clamp(7px,.9vw,15px) 0 0;font:400 clamp(14px,1.2vw,19px)/1.3 'Code Next',Arial,sans-serif;
+}
+.ny-site #promo.ny-promo:has(.promo-tv-stage) {padding:var(--row-gap) 0 clamp(22px,4svh,52px)}
+.ny-site #promo:has(.promo-tv-stage) .ny-promo-head {grid-area:1/1;display:block;width:var(--prop);max-width:100%;justify-self:center;margin:0;padding:0;align-self:center}
+.ny-site #promo .ny-kicker:empty {display:none}
+.ny-site #promo .promo-tv-stage {grid-area:1/2;display:block;justify-self:center;width:var(--prop);max-width:none;margin:0}
+.ny-site #promo .promo-tv-stage::before {display:none}
+.ny-site #promo .promo-tv-object {width:calc(100% / .654);max-width:none;margin:-2.2% 0 -5.6% -26.45%}
+.ny-site #promo .promo-tv-controls {width:100%;justify-content:center;margin:0;padding:0;gap:clamp(4px,.6vw,12px)}
+.ny-site main:has(.solo-hero) {background-color:#e5f4f7}
+@media (min-width:651px) and (max-width:1000px) {
+ .ny-site .solo-hero .set-copy h1 {font-size:clamp(36px,5.5vw,55px)}
+}
+@media(max-width:650px) {
+ .ny-site {--prop:47vw;--lane-gap:clamp(9px,2.8vw,16px);--row-gap:clamp(14px,2.4svh,21px)}
+ .ny-site .solo-hero .set-frame {display:flex;flex-direction:column;align-items:stretch;gap:0;padding-top:calc(var(--kv-header) + env(safe-area-inset-top) + 12px)}
+ .ny-site .solo-hero .set-art {align-self:flex-end;margin:clamp(4px,1svh,10px) 0 0}
+ .ny-site .receiver-rail #radio.ny-radio {grid-template-columns:var(--prop) minmax(0,1fr)}
+ .ny-site #promo.ny-promo:has(.promo-tv-stage) {grid-template-columns:minmax(0,1fr) var(--prop)}
+ .ny-site #radio .ny-section-heading h2,.ny-site #promo:has(.promo-tv-stage) .ny-promo-head h2 {font-size:clamp(16px,4.5vw,29px);line-height:1.03}
+ .ny-site #radio .ny-section-heading p,.ny-site #promo:has(.promo-tv-stage) .ny-promo-head p {font-size:clamp(12px,3.25vw,16px);line-height:1.32}
+ .ny-site #radio .receiver-controls {gap:3px}
+ .ny-site #radio .receiver-controls button {padding-inline:8px}
+ .ny-site #promo .promo-tv-controls {display:flex;gap:4px;align-items:center}
+ .ny-site #promo .promo-tv-controls button {
+  position:relative;flex:0 0 44px;width:44px;min-height:44px;padding:0;border-radius:50%;gap:0;
+ }
+ .ny-site #promo .promo-tv-controls button span {
+  position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;
+ }
+ .ny-site #promo .promo-tv-controls svg {width:17px;height:17px}
+}

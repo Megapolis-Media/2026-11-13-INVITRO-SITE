@@ -1,0 +1,3 @@
+import {db,lotteryConfig,responseError} from '@/lib/participant/server';
+export const dynamic='force-dynamic';
+export async function GET(){try{const [c,n]=await Promise.all([lotteryConfig(),db().prepare("SELECT COUNT(*) AS tickets,COALESCE(SUM(CASE WHEN kind='registration' THEN 1 ELSE 0 END),0) AS participants FROM tickets").first<{tickets:number,participants:number}>()]);return Response.json({registeredTickets:n?.tickets||0,registeredParticipants:n?.participants||0,totalTickets:c.groups*1000,totalParticipants:c.groups*500,registrationOpen:!!c.open,updatedAt:new Date().toISOString()},{headers:{'Cache-Control':'no-store'}})}catch(e){return responseError(e)}}

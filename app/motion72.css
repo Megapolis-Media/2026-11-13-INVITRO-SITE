@@ -1,0 +1,28 @@
+/* Hero receiver: the same fascia as the radio section, on a deep chassis. */
+.ensemble-hero .hero-radio .radio-dial{perspective:850px;overflow:visible}
+.ensemble-hero .hero-radio .rigonda-object{
+ isolation:auto;transform-style:preserve-3d;
+ transform:rotateX(-7deg) rotateY(-25deg) rotateZ(2deg);
+ transform-origin:50% 55%;
+}
+.ensemble-hero .hero-radio-depth{
+ display:block;position:absolute;inset:10% 4% 12%;border-radius:15%;
+ background:linear-gradient(140deg,#c9ffff 0%,#1ac7d5 12%,#0695aa 39%,#00566e 86%,#002e43 100%);
+ border:0;box-shadow:inset -5px 0 7px #00344e55,inset 0 2px 3px #e7ffff55;
+ backface-visibility:hidden;pointer-events:none;
+}
+.ensemble-hero .hero-radio .rigonda-body{transform:translateZ(0);backface-visibility:hidden}
+.ensemble-hero .hero-radio .rigonda-title{transform:translateZ(1px)}
+.ensemble-hero .hero-radio .rigonda-glass{transform:translateZ(2px)}
+@media(max-width:700px){
+ .ensemble-hero .hero-tv{left:45%;width:56%;top:-1%}
+ .ensemble-hero .hero-radio{left:47%;width:53%;top:34%}
+}
+@media(min-width:701px) and (max-width:1000px){
+ .ensemble-hero .hero-tv{left:55%;width:43%}
+ .ensemble-hero .hero-radio{left:65%;width:35%}
+}
+@media(min-width:1001px){
+ .ensemble-hero .hero-tv{left:61%;width:38%}
+ .ensemble-hero .hero-radio{left:72%;width:28%;top:47%}
+}

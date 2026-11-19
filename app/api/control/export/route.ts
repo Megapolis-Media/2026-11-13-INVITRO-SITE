@@ -1,0 +1,4 @@
+import {authorize} from '@/lib/event/server';
+import {db,responseError,ticketNumber} from '@/lib/participant/server';
+export const dynamic='force-dynamic';
+export async function GET(req:Request){try{authorize(req);const u=new URL(req.url),after=Math.max(0,Number(u.searchParams.get('after'))||0),q=(u.searchParams.get('q')||'').slice(0,100);const rows=await db().prepare(`SELECT t.id,t.kind,t.created,p.id AS participant,p.first,p.last,p.email,p.agglomeration,COALESCE((SELECT SUM(points) FROM achievements WHERE user=p.id),0) AS points FROM tickets t JOIN participants p ON p.id=t.user WHERE t.id>? AND (p.email LIKE ? OR p.first LIKE ? OR p.last LIKE ?) ORDER BY t.id LIMIT 250`).bind(after,...Array(3).fill('%'+q+'%')).all<any>();return Response.json({rows:rows.results.map(r=>({...r,number:ticketNumber(r.id)})),next:rows.results.length===250?rows.results[249].id:null},{headers:{'Cache-Control':'no-store'}})}catch(e){return responseError(e)}}

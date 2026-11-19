@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru" id="telecenter">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Три формата — Телецентр ИНВИТРО</title>
+<style>
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+body{display:flex;flex-direction:column;color:#073c49;background:#e0edf0;font:500 15px/1.2 system-ui,sans-serif}
+header{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:8px 18px;padding:8px 12px;background:#f7fbfc;border-bottom:1px solid #c3d9df}
+nav,.actions{display:flex;align-items:center;gap:3px}
+nav{padding:3px;border-radius:14px;background:#e8f1f3}
+button,select{font:inherit;color:inherit;min-height:40px;border:0;background:transparent;border-radius:11px;padding:7px 12px;cursor:pointer}
+button[aria-pressed=true]{background:#005566;color:#fff}
+button:focus-visible,select:focus-visible{outline:2px solid #00788e;outline-offset:1px}
+#play{background:white;box-shadow:inset 0 0 0 1px #bad0d5}
+main{position:relative;min-height:0;flex:1;overflow:hidden}
+#viewport{position:absolute;inset:0;display:grid;place-items:center;padding:6px}
+#stage{position:relative;min-width:0;min-height:0;box-shadow:0 5px 20px #214e5e22}
+iframe{position:absolute;inset:0;transform-origin:top left;background:#e5f4f7;border:0}
+@media(max-width:580px){header{gap:4px;padding:5px}button,select{min-height:36px;font-size:13px;padding:6px 9px}#viewport{padding:2px}}
+</style><link rel="stylesheet" href="/telecenter-ui.css?v=97">
+</head>
+<body class="format-review">
+<header>
+ <nav aria-label="Формат экрана"><button data-ui-action="secondary" type="button" data-view="phone">Телефон</button><button data-ui-action="secondary" type="button" data-view="tablet">Планшет</button><button data-ui-action="secondary" type="button" data-view="desktop">Десктоп</button></nav>
+ <div class="actions"><select data-ui-action="secondary" aria-label="Перейти к сцене" id="scene"><option value="home">Первый экран</option><option value="radio">Радио</option><option value="promo">Телевизор</option><option value="orders">Стол заказов</option><option value="games">Зимние игры</option><option value="tickets">Билеты</option><option value="contacts">Контакты</option></select><button data-ui-action="secondary" type="button" id="play">Повторить полёт</button></div>
+</header>
+<main><div id="viewport"><div id="stage"><iframe id="site" title="Телецентр ИНВИТРО в выбранном формате" allow="autoplay; fullscreen" src="/"></iframe></div></div></main>
+<script>
+const views={phone:[390,844],tablet:[820,1180],desktop:[1440,900]};
+const params=new URLSearchParams(location.search);
+let view=Object.hasOwn(views,params.get('view'))?params.get('view'):'phone';
+const viewport=document.querySelector('#viewport'),stage=document.querySelector('#stage'),frame=document.querySelector('#site');
+const scenes=document.querySelector('#scene'),buttons=[...document.querySelectorAll('[data-view]')];
+let replay=0;
+function fit(){
+ const [w,h]=views[view],gap=innerWidth<=580?4:12;
+ const scale=Math.min((viewport.clientWidth-gap)/w,(viewport.clientHeight-gap)/h,1);
+ stage.style.width=w*scale+'px';stage.style.height=h*scale+'px';
+ frame.style.width=w+'px';frame.style.height=h+'px';frame.style.transform='scale('+scale+')';
+ buttons.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===view)));
+}
+function showScene(){
+ const key=scenes.value,doc=frame.contentDocument,win=frame.contentWindow;
+ const section=doc?.getElementById(key);if(!section)return;
+ const top=key==='home'?0:win.scrollY+section.getBoundingClientRect().top-10;
+ win.scrollTo({top,behavior:'instant'});
+}
+buttons.forEach(b=>b.onclick=()=>{
+ ++replay;view=b.dataset.view;fit();const url=new URL(location.href);url.searchParams.set('view',view);history.replaceState(null,'',url);
+ requestAnimationFrame(()=>requestAnimationFrame(showScene));
+});
+scenes.onchange=()=>{++replay;showScene()};
+document.querySelector('#play').onclick=()=>{
+ const run=++replay,doc=frame.contentDocument,win=frame.contentWindow;
+ if(!doc?.querySelector('.promo-tv-screen'))return;
+ scenes.value='home';showScene();
+ requestAnimationFrame(()=>requestAnimationFrame(()=>{
+  if(run!==replay)return;
+  const radio=doc.querySelector('.receiver-contact-point'),tube=doc.querySelector('.promo-tv-screen'),dock=doc.querySelector('.ny-dock');
+  const screen=tube.getBoundingClientRect(),foot=dock?.getBoundingClientRect().top??win.innerHeight;
+  const stop=Math.max(radio.getBoundingClientRect().top-win.innerHeight*.34,screen.bottom-foot+56);
+  win.scrollTo({top:win.scrollY+stop,behavior:win.matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+ }));
+};
+new ResizeObserver(fit).observe(viewport);frame.addEventListener('load',showScene);fit();
+</script>
+</body></html>

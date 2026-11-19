@@ -19,9 +19,9 @@
 
 .registration-counter-fallback{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:12px;color:#005564;background:white}
 
-.registration-counter-fallback>span{font:700 14px/1.4 Arial,sans-serif;letter-spacing:.08em}
+.registration-counter-fallback>span{font:700 14px/1.4 var(--iv-body);letter-spacing:.08em}
 
-.registration-counter-fallback strong{font:800 clamp(48px,9vw,140px)/1 Arial,sans-serif;color:#00acc6;font-variant-numeric:tabular-nums}
+.registration-counter-fallback strong{font:800 clamp(48px,9vw,140px)/1 var(--iv-body);color:#00acc6;font-variant-numeric:tabular-nums}
 
 .registration-counter.is-ready .registration-counter-fallback{display:none}
 

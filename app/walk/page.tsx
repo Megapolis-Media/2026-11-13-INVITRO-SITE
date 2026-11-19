@@ -5,6 +5,7 @@ import './globals.css';
 import './telecentre.css';
 import './fashion-show.css';
 import FashionShow,{FashionCollection} from './fashion-show';
+import {readyCanvasFonts} from '@/lib/canvas-fonts';
 import {useEffect,useRef,useState} from 'react';
 import {ArrowUp,ArrowDown,ArrowLeft,ArrowRight,Compass,Camera,X,Volume2,Star,ChevronLeft} from 'lucide-react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
@@ -23,7 +24,7 @@ export default function Walk(){
  const [room,setRoom]=useState('hub'),[loaded,setLoaded]=useState(false),[error,setError]=useState(''),[target,setTarget]=useState<any>(null),[dialog,setDialog]=useState<any>(null),[map,setMap]=useState(false),[done,setDone]=useState<string[]>([]),[found,setFound]=useState<string[]>([]),[answer,setAnswer]=useState(''),[toast,setToast]=useState(''),[stats,setStats]=useState<Stats|null>(null),[status,setStatus]=useState('Ожидаем данные'),[timer,setTimer]=useState(''),[playing,setPlaying]=useState(false),[preview,setPreview]=useState(false);
  function enter(id:string){engine.current?.enter(id);setRoom(id);setMap(false);setDialog(null);setAnswer('')}
  function interact(v:any){if(['yak','pelsh'].includes(v.id))void api('challenge',{game:v.id}).catch(()=>{});if(v.id==='evidence')setFound(old=>old.includes(v.prop)?old:[...old,v.prop]);setDialog(v);setAnswer('')}
- useEffect(()=>{let stopped=false;import('./telecentre.js').then(({createWorld})=>{if(stopped)return;engine.current=createWorld(host.current,{onRoom:setRoom,onTarget:setTarget,onInteract:interact,onEvent:setToast});if(statsRef.current)engine.current.setStats(statsRef.current.registeredTickets,statusRef.current);setPreview(new URLSearchParams(location.search).get('preview')==='1');const first=new URLSearchParams(location.search).get('room');if(first&&rooms.some(r=>r[0]===first))engine.current.enter(first);setLoaded(true)}).catch(e=>{console.error('Telecentre scene:',e);setError('Не удалось открыть сцену. Попробуйте обновить страницу.')});return()=>{stopped=true;engine.current?.dispose();audio.current?.close()}},[]);
+ useEffect(()=>{let stopped=false;Promise.all([import('./telecentre.js'),readyCanvasFonts()]).then(([{createWorld}])=>{if(stopped)return;engine.current=createWorld(host.current,{onRoom:setRoom,onTarget:setTarget,onInteract:interact,onEvent:setToast});if(statsRef.current)engine.current.setStats(statsRef.current.registeredTickets,statusRef.current);setPreview(new URLSearchParams(location.search).get('preview')==='1');const first=new URLSearchParams(location.search).get('room');if(first&&rooms.some(r=>r[0]===first))engine.current.enter(first);setLoaded(true)}).catch(e=>{console.error('Telecentre scene:',e);setError('Не удалось открыть сцену. Попробуйте обновить страницу.')});return()=>{stopped=true;engine.current?.dispose();audio.current?.close()}},[]);
  useEffect(()=>subscribeStats(s=>{statsRef.current=s;setStats(s);engine.current?.setStats(s.registeredTickets,statusRef.current)},v=>{statusRef.current=v;setStatus(v);engine.current?.setStatus(v)}),[]);
  useEffect(()=>{setTimer(countdown());const t=setInterval(()=>setTimer(countdown()),1000);return()=>clearInterval(t)},[]);
  useEffect(()=>{engine.current?.pause(!!dialog||map)},[dialog,map,loaded]);

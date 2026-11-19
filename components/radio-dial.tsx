@@ -1,7 +1,5 @@
 'use client';
 import {useEffect,useRef,useState,type CSSProperties} from 'react';
-import '@fontsource/oswald/cyrillic-400.css';
-import '@fontsource/oswald/latin-400.css';
 import './radio-dial.css';
 import CabinetVolume from './cabinet-volume';
 

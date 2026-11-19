@@ -73,8 +73,8 @@
 #telecenter .ny-header {padding-inline:var(--kv-left) var(--kv-right)}
 #telecenter .ny-header nav {align-items:center;gap:clamp(12px,2vw,32px)}
 #telecenter .ny-header nav a {display:inline-flex;align-items:center;min-height:var(--ui-control);font:650 .9375rem/1.2 var(--ui-font)}
-#telecenter .solo-hero .set-art,#telecenter #promo .promo-tv-stage,#telecenter #radio .ny-section-heading {justify-self:end}
-#telecenter #radio .ny-radio-object,#telecenter #promo .ny-promo-head {justify-self:start}
+#telecenter .solo-hero .set-art,#telecenter #radio .ny-radio-object,#telecenter #promo .ny-promo-head {justify-self:end}
+#telecenter #radio .ny-section-heading,#telecenter #promo .promo-tv-stage {justify-self:start}
 #telecenter .ny-site .receiver-controls,#telecenter .ny-site .promo-tv-controls {
  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;
  width:min(100%,34rem);max-width:100%;gap:var(--ui-gap);margin:0 auto;padding:0;

@@ -38,32 +38,8 @@ import Ticket3D from '@/components/ticket-3d';
 import ContactPanel from '@/components/contact-panel';
 import SnowLayer from '@/components/snow-layer';
 const RADIO_STREAM='https://m1m128.hostingradio.ru:8074/invitro.m1m128.mp3';
-export default function Home(){const {config,mode,scene,preview}=useEvent();const [ballMotion,toggleBallMotion,motionReady]=useBallMotion();const dock=useRef<HTMLElement>(null),mixFrame=useRef(0),startingRadio=useRef(false);const [profile,setProfile]=useState<Participant|null>(null),[panel,setPanel]=useState(''),[playing,setPlaying]=useState(false),[sound,setSound]=useState(false),[radioBlocked,setRadioBlocked]=useState(false),[radioConnecting,setRadioConnecting]=useState(false),[notice,setNotice]=useState(''),[stats,setStats]=useState<Stats|null>(null),[requested,setRequested]=useState(false),[busy,setBusy]=useState(false);const audio=useRef<HTMLAudioElement>(null),video=useRef<HTMLVideoElement>(null),requestId=useRef(''),radioDeclined=useRef(false),tuningTimer=useRef<ReturnType<typeof setTimeout>|null>(null),cancelTuning=useRef<(()=>void)|null>(null),audioGeneration=useRef(0),retryAfterGesture=useRef(false),retryStart=useRef<()=>void>(()=>{});
-useEffect(()=>{retryStart.current=()=>startRadio(true)});
+export default function Home(){const {config,mode,scene,preview}=useEvent();const [ballMotion,toggleBallMotion,motionReady]=useBallMotion();const dock=useRef<HTMLElement>(null),mixFrame=useRef(0),startingRadio=useRef(false);const [profile,setProfile]=useState<Participant|null>(null),[panel,setPanel]=useState(''),[playing,setPlaying]=useState(false),[sound,setSound]=useState(false),[radioBlocked,setRadioBlocked]=useState(false),[radioConnecting,setRadioConnecting]=useState(false),[notice,setNotice]=useState(''),[stats,setStats]=useState<Stats|null>(null),[requested,setRequested]=useState(false),[busy,setBusy]=useState(false);const audio=useRef<HTMLAudioElement>(null),video=useRef<HTMLVideoElement>(null),requestId=useRef(''),tuningTimer=useRef<ReturnType<typeof setTimeout>|null>(null),cancelTuning=useRef<(()=>void)|null>(null),audioGeneration=useRef(0);
 useEffect(()=>installRadioAudioUnlock(),[]);
-// Unlock this exact media element during a real hero gesture. Safari can then
-// switch its source to the live station at the later physical contact.
-useEffect(()=>{
- const player=audio.current;if(!player||mode==='live'||!scene.blocks.radio)return;
- let unlocked=false,priming=false,disposed=false;
- function prime(event:Event){
-  if(!player||disposed||!event.isTrusted||startingRadio.current||!player.paused)return;
-  if(retryAfterGesture.current&&event.target instanceof Element&&!event.target.closest('button,a,input,dialog')){
-   retryAfterGesture.current=false;retryStart.current();return;
-  }
-  if(unlocked||priming)return;
-  if(!(event.target instanceof Element)||event.target.closest('button,a,input,dialog')||
-     (document.querySelector('.solo-hero')?.getBoundingClientRect().bottom??0)<innerHeight*.35)return;
-  const token=audioGeneration.current;priming=true;player.src='/hero-v85/audio-unlock.wav';
-  void player.play().then(()=>{
-   unlocked=true;
-   if(!disposed&&audioGeneration.current===token){player!.pause();player!.removeAttribute('src');player!.load()}
-  }).catch(()=>{}).finally(()=>{priming=false});
- }
- for(const type of ['touchend','pointerup','keydown'])window.addEventListener(type,prime,{capture:true,passive:true});
- return()=>{disposed=true;for(const type of ['touchend','pointerup','keydown'])window.removeEventListener(type,prime,true)};
-},[mode,scene.blocks.radio]);
-
 useEffect(()=>{
  const background=()=>{if(document.hidden&&audio.current&&!audio.current.paused){cancelAnimationFrame(mixFrame.current);audio.current.volume=1}};
  document.addEventListener('visibilitychange',background);return()=>document.removeEventListener('visibilitychange',background);
@@ -79,7 +55,7 @@ useEffect(()=>{void api().then(setProfile).catch(()=>{});return subscribeStats(s
 useEffect(()=>{if(mode==='live'||!scene.blocks.radio)stop()},[mode,scene.blocks.radio]);
 function endTuning(){if(tuningTimer.current)clearTimeout(tuningTimer.current);tuningTimer.current=null;cancelTuning.current?.();cancelTuning.current=null;window.dispatchEvent(new CustomEvent('telecenter:radio-tuning',{detail:false}))}
 useEffect(()=>()=>{if(tuningTimer.current)clearTimeout(tuningTimer.current);cancelTuning.current?.();cancelAnimationFrame(mixFrame.current)},[]);
-function stop(){retryAfterGesture.current=false;startingRadio.current=false;cancelAnimationFrame(mixFrame.current);setRadioConnecting(false);setRadioBlocked(false);audioGeneration.current++;endTuning();audio.current?.pause();if(audio.current){audio.current.removeAttribute('src');audio.current.load();}setPlaying(false)}
+function stop(){startingRadio.current=false;cancelAnimationFrame(mixFrame.current);setRadioConnecting(false);setRadioBlocked(false);audioGeneration.current++;endTuning();audio.current?.pause();if(audio.current){audio.current.removeAttribute('src');audio.current.load();}setPlaying(false)}
 function focusAudio(){stop();if(video.current)video.current.muted=true;setSound(false)}
 function tuneReceiver(player:HTMLAudioElement,generation:number,ready:Promise<boolean>){
  const startedAt=performance.now();
@@ -95,11 +71,9 @@ function tuneReceiver(player:HTMLAudioElement,generation:number,ready:Promise<bo
   },280);
  });
 }
-function startRadio(fromContact=false){
- if(mode==='live'||!scene.blocks.radio||startingRadio.current||(fromContact&&radioDeclined.current))return;
+function startRadio(){
+ if(mode==='live'||!scene.blocks.radio||startingRadio.current)return;
  const player=audio.current;if(!player)return;
- if(playing&&!player.paused){if(fromContact){endTuning();cancelAnimationFrame(mixFrame.current);tuneReceiver(player,audioGeneration.current,prepareRadioAudio())}return}
- retryAfterGesture.current=false;
  const generation=++audioGeneration.current;startingRadio.current=true;endTuning();cancelAnimationFrame(mixFrame.current);setRadioConnecting(true);setRadioBlocked(false);setNotice('');
  const ready=prepareRadioAudio(); // resume Web Audio inside the gesture, alongside HTML playback
  document.querySelectorAll('audio').forEach(a=>{if(a!==player)a.pause()});if(video.current)video.current.muted=true;setSound(false);
@@ -110,15 +84,15 @@ function startRadio(fromContact=false){
  tuneReceiver(player,generation,ready);
  void attempt.then(()=>{if(generation!==audioGeneration.current)return;startingRadio.current=false;setPlaying(true);setRadioConnecting(false);setRadioBlocked(false)})
  .catch((err:unknown)=>{if(generation!==audioGeneration.current)return;audioGeneration.current++;startingRadio.current=false;endTuning();cancelAnimationFrame(mixFrame.current);player.volume=1;setPlaying(false);setRadioConnecting(false);
-  const denied=(err as {name?:string}|null)?.name==='NotAllowedError';setRadioBlocked(denied);retryAfterGesture.current=denied&&fromContact;
+  const denied=(err as {name?:string}|null)?.name==='NotAllowedError';setRadioBlocked(denied);
   if(!denied)setNotice('Не удалось подключиться к ИНВИТРО FM. Попробуйте включить радио ещё раз.');
  });
 }
-function toggleRadio(){if(playing||radioConnecting||startingRadio.current){radioDeclined.current=true;stop();return}radioDeclined.current=false;startRadio()}
+function toggleRadio(){if(playing||radioConnecting||startingRadio.current){stop();return}startRadio()}
 
 function filmSound(){const on=!sound;if(on)stop();if(video.current)video.current.muted=!on;setSound(on)}
 function toOrders(){document.getElementById('orders')?.scrollIntoView({behavior:'smooth'})}
-return <div className={'ny-site '+(!scene.blocks.hero?'without-hero':'')} data-ball-motion={ballMotion?'on':'off'}><audio ref={audio} src={config.radioUrl} preload="none" onPause={()=>setPlaying(false)} onError={e=>{if(!e.currentTarget.getAttribute('src')||!e.currentTarget.error)return;startingRadio.current=false;setRadioConnecting(false);setPlaying(false);setNotice('Не удалось подключиться к ИНВИТРО FM. Попробуйте включить радио ещё раз.')}}/><StudioDirector motion={ballMotion} radio={mode!=='live'&&scene.blocks.radio} tv={mode==='before'&&scene.blocks.promo} onRadio={()=>startRadio(true)}/><ScrollWorld active={motionReady} effects={ballMotion} radioPlaying={playing} filmJourney={mode==='before'}/>{preview&&<div className="event-preview-note">Предпросмотр · изменения не опубликованы</div>}
+return <div className={'ny-site '+(!scene.blocks.hero?'without-hero':'')} data-ball-motion={ballMotion?'on':'off'}><audio ref={audio} preload="none" onPause={()=>setPlaying(false)} onError={e=>{if(!e.currentTarget.getAttribute('src')||!e.currentTarget.error)return;startingRadio.current=false;setRadioConnecting(false);setPlaying(false);setNotice('Не удалось подключиться к ИНВИТРО FM. Попробуйте включить радио ещё раз.')}}/><StudioDirector motion={ballMotion} radio={mode!=='live'&&scene.blocks.radio} tv={mode==='before'&&scene.blocks.promo}/><ScrollWorld active={motionReady} effects={ballMotion} radioPlaying={playing} filmJourney={mode==='before'}/>{preview&&<div className="event-preview-note">Предпросмотр · изменения не опубликованы</div>}
 <header className="ny-header"><a href="#home" className="ny-brand" aria-label="Новогодний телецентр INVITRO"><img src="/favicon.svg" width="48" height="44" alt=""/><b>INVITRO</b></a><nav>{scene.blocks.promo&&<a href="#promo">{mode==='live'?'Прямой эфир':mode==='after'?'Повтор':'Анонс'}</a>}{scene.blocks.radio&&mode!=='live'&&<a href="#radio">Радио</a>}{scene.blocks.orders&&<a href="#orders">Стол заказов</a>}{scene.blocks.games&&<a href="#games">Зимние игры</a>}</nav>{profile&&<button data-ui-action="secondary" className="ny-header-ticket" onClick={()=>setPanel('account')}>Мой билет</button>}</header>
 <SnowLayer/><main>{scene.blocks.hero&&<CinemaHero allowFullMotion={ballMotion} title={scene.title} intro={scene.intro} mode={mode} onTicket={()=>mode==='before'?setPanel('account'):document.getElementById('promo')?.scrollIntoView({behavior:'smooth'})}/>}
 {scene.blocks.radio&&mode!=='live'&&<div className="receiver-rail"><section className="ny-section ny-radio" id="radio" aria-labelledby="radio-section-title">
@@ -158,7 +132,7 @@ return <div className={'ny-site '+(!scene.blocks.hero?'without-hero':'')} data-b
   </figure>
 </section>}
 <footer id="contacts" className="ny-footer"><b>INVITRO</b><span>НОВОГОДНИЙ ТЕЛЕЦЕНТР<br/>23 декабря · 12:00 МСК</span><div className="footer-contacts"><button data-ui-action="secondary" onClick={()=>setPanel('support')}>Техническая поддержка</button><button data-ui-action="secondary" onClick={()=>setPanel('organizers')}>Команда организаторов</button><a data-ui-action="secondary" href="#home">Наверх</a></div></footer></main>
-<aside ref={dock} className="ny-dock" aria-label="Управление эфиром">{mode!=='live'&&scene.blocks.radio&&<button data-ui-action="solid" onClick={()=>void toggleRadio()} aria-label={playing?'Остановить радио':radioBlocked?'Включить звук радио':'Включить радио'}>{playing?<Square size={19}/>:<Play size={19}/>}<span className="ui-full-label">{radioConnecting?'Настройка':playing?'Стоп':radioBlocked?'Включить звук':'Радио'}</span><span className="ui-short-label" aria-hidden="true">{playing?'Стоп':radioBlocked?'Звук':'Радио'}</span></button>}{mode==='live'&&<button data-ui-action="secondary" onClick={()=>document.getElementById('promo')?.scrollIntoView({behavior:'smooth'})}><Play size={19}/><span>Смотреть эфир</span></button>}{(playing||radioConnecting)&&scene.blocks.radio&&mode!=='live'&&<div className="ny-dock-track"><img src="/favicon.svg" alt=""/><span>Радио INVITRO<small>Прямой эфир</small></span></div>}<button data-ui-action="secondary" aria-label="Передать привет" onClick={()=>setPanel('greeting')}><Mail size={19}/><span className="ui-full-label">Передать привет</span><span className="ui-short-label" aria-hidden="true">Привет</span></button>{scene.blocks.orders&&<button data-ui-action="secondary" aria-label="Заказать песню" onClick={toOrders}><Music2 size={19}/><span className="ui-full-label">Заказать песню</span><span className="ui-short-label" aria-hidden="true">Песня</span></button>}<button data-ui-action="secondary" aria-label="Мой билет" onClick={()=>setPanel('account')}><Ticket size={19}/><span className="ui-full-label">Мой билет</span><span className="ui-short-label" aria-hidden="true">Билет</span></button><button data-ui-action="secondary" type="button" className="ball-switch" disabled={!motionReady} onClick={toggleBallMotion} aria-label="Объёмные эффекты шара" aria-pressed={ballMotion} aria-controls="ball-journey" title={ballMotion?'Уменьшить эффекты движения':'Включить объёмные эффекты'}><span className="switch-glyph" aria-hidden="true"><Box size={20}/></span><span>3D</span></button></aside>
+<aside ref={dock} className="ny-dock" aria-label="Управление эфиром">{mode!=='live'&&scene.blocks.radio&&<button data-ui-action="solid" onClick={()=>void toggleRadio()} aria-label={playing?'Остановить радио':radioBlocked?'Включить звук радио':'Включить радио'}>{playing?<Square size={19}/>:<Play size={19}/>}<span className="ui-full-label">{radioConnecting?'Настройка':playing?'Стоп':radioBlocked?'Включить звук':'Радио'}</span><span className="ui-short-label" aria-hidden="true">{playing?'Стоп':radioBlocked?'Звук':'Радио'}</span></button>}{mode==='live'&&<button data-ui-action="secondary" onClick={()=>document.getElementById('promo')?.scrollIntoView({behavior:'smooth'})}><Play size={19}/><span>Смотреть эфир</span></button>}{(playing||radioConnecting)&&scene.blocks.radio&&mode!=='live'&&<div className="ny-dock-track"><img src="/favicon.svg" alt=""/><span>ИНВИТРО FM<small>{radioConnecting?'Подключение…':'В эфире'}</small></span></div>}<button data-ui-action="secondary" aria-label="Передать привет" onClick={()=>setPanel('greeting')}><Mail size={19}/><span className="ui-full-label">Передать привет</span><span className="ui-short-label" aria-hidden="true">Привет</span></button>{scene.blocks.orders&&<button data-ui-action="secondary" aria-label="Заказать песню" onClick={toOrders}><Music2 size={19}/><span className="ui-full-label">Заказать песню</span><span className="ui-short-label" aria-hidden="true">Песня</span></button>}<button data-ui-action="secondary" aria-label="Мой билет" onClick={()=>setPanel('account')}><Ticket size={19}/><span className="ui-full-label">Мой билет</span><span className="ui-short-label" aria-hidden="true">Билет</span></button><button data-ui-action="secondary" type="button" className="ball-switch" disabled={!motionReady} onClick={toggleBallMotion} aria-label="Объёмные эффекты шара" aria-pressed={ballMotion} aria-controls="ball-journey" title={ballMotion?'Уменьшить эффекты движения':'Включить объёмные эффекты'}><span className="switch-glyph" aria-hidden="true"><Box size={20}/></span><span>3D</span></button></aside>
 {notice&&<div className="ny-notice" role="status">{notice}<button data-ui-action="icon" aria-label="Закрыть уведомление" onClick={()=>setNotice('')}>×</button></div>}
-<Dialog open={!!panel} onOpenChange={o=>{if(!o)setPanel('')}}><DialogContent className="ny-modal"><DialogTitle>{panel==='support'?'Техническая поддержка':panel==='organizers'?'Команда организаторов':panel==='greeting'?'Привет в эфир':'Ваш билет'}</DialogTitle><DialogDescription>{['support','organizers'].includes(panel)?'Оставьте вопрос и почту для ответа.':panel==='greeting'?'Поздравьте коллег — редактор передаст Ваши слова в эфир.':'Войдите по рабочей почте. Билет сохранится в кабинете.'}</DialogDescription>{['support','organizers'].includes(panel)?<ContactPanel kind={panel}/>:panel==='greeting'?<GuestGreeting profile={profile} allowPostcard={false}/>:<ParticipantPanel profile={profile} onChange={setProfile} onWalk={()=>{setPanel('');document.getElementById('games')?.scrollIntoView({behavior:'smooth'})}}/>}</DialogContent></Dialog>
+<Dialog open={!!panel} onOpenChange={o=>{if(!o)setPanel('')}}><DialogContent className="ny-modal"><DialogTitle>{panel==='support'?'Техническая поддержка':panel==='organizers'?'Команда организаторов':panel==='greeting'?'Привет в эфир':'Ваш билет'}</DialogTitle><DialogDescription>{['support','organizers'].includes(panel)?'Оставьте вопрос и почту для ответа.':panel==='greeting'?'Поздравьте коллег — редактор передаст Ваши слова в эфир.':'Пройдите регистрацию по корпоративной почте. Билет сохранится в вашем личном кабинете.'}</DialogDescription>{['support','organizers'].includes(panel)?<ContactPanel kind={panel}/>:panel==='greeting'?<GuestGreeting profile={profile} allowPostcard={false}/>:<ParticipantPanel profile={profile} onChange={setProfile} onWalk={()=>{setPanel('');document.getElementById('games')?.scrollIntoView({behavior:'smooth'})}}/>}</DialogContent></Dialog>
 </div>}

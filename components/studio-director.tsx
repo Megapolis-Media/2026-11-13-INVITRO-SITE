@@ -2,12 +2,10 @@
 import {useEffect, useRef} from 'react';
 import {crossesStop, measureStop, type StudioStop} from './studio-crossing';
 
-type Props = {motion: boolean; radio: boolean; tv: boolean; onRadio: () => void};
+type Props = {motion: boolean; radio: boolean; tv: boolean};
 const stops: StudioStop[] = ['radio','tv'];
 
-export default function StudioDirector({motion, radio, tv, onRadio}: Props) {
-  const onReceiver = useRef(onRadio);
-  useEffect(() => { onReceiver.current = onRadio }, [onRadio]);
+export default function StudioDirector({motion, radio, tv}: Props) {
   const seen = useRef(new Set<StudioStop>());
 
   useEffect(() => {
@@ -26,7 +24,6 @@ export default function StudioDirector({motion, radio, tv, onRadio}: Props) {
       element.setAttribute('data-cue', source);
       if (id === 'radio') {
         window.dispatchEvent(new Event('telecenter:receiver-impact'));
-        onReceiver.current();
       } else {
         window.dispatchEvent(new CustomEvent('telecenter:tv-impact', {detail: {motion}}));
       }

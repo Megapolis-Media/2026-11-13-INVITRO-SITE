@@ -1,7 +1,14 @@
 import type {Participant} from './client';
 import {gameProgress,requiredIds} from '../games/catalog';
 import {env} from 'cloudflare:workers';
-export const settings=()=>env as unknown as {DB:D1Database,MEDIA:R2Bucket,RESEND_API_KEY?:string,MAIL_FROM?:string,EMPLOYEE_EMAIL_DOMAINS?:string,STUDIO_ACCESS_TOKEN?:string};
+import {studioAuthorization} from '@/lib/event/studio-authorization';
+export const settings=()=>env as unknown as {DB:D1Database,MEDIA:R2Bucket,RESEND_API_KEY?:string,MAIL_FROM?:string,EMPLOYEE_EMAIL_DOMAINS?:string,STUDIO_ACCESS_TOKEN?:string,STUDIO_LOGIN?:string,STUDIO_PASSWORD?:string};
+export function hasStudioAccess(req:Request) {
+  const {STUDIO_ACCESS_TOKEN,STUDIO_LOGIN,STUDIO_PASSWORD}=settings();
+  const actual=req.headers.get('authorization');
+  if(STUDIO_ACCESS_TOKEN && actual===studioAuthorization('',STUDIO_ACCESS_TOKEN))return true;
+  return Boolean(STUDIO_LOGIN && STUDIO_PASSWORD && actual===studioAuthorization(STUDIO_LOGIN,STUDIO_PASSWORD));
+}
 export function db(){const d=settings().DB;if(!d)throw new Error('Сервис временно недоступен. Попробуйте позже.');return d}
 export const hash=async(s:string)=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s)))).map(b=>b.toString(16).padStart(2,'0')).join('');
 export const token=()=>crypto.randomUUID()+crypto.randomUUID();

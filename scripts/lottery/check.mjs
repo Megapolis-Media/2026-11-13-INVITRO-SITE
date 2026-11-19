@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {formatTicket,parseStats} from '../../lib/lottery/data.ts';
+assert.equal(formatTicket(1,6),'01006');
+assert.equal(formatTicket(13,999),'13999');
+assert.equal(formatTicket(99,999),'99999');
+for(const [group,number] of [[0,0],[100,1],[1,-1],[1,1000],[1,1.5]])assert.throws(()=>formatTicket(group,number));
+const updatedAt=new Date().toISOString();
+for(const count of [0,8742,13000])assert.equal(parseStats({registeredTickets:count,totalTickets:13000,updatedAt}).registeredTickets,count);
+for(const count of [-1,13001,1.5,'8742'])assert.throws(()=>parseStats({registeredTickets:count,totalTickets:13000,updatedAt}));
+assert.throws(()=>parseStats({registeredTickets:1,totalTickets:10000,updatedAt}));
+assert.throws(()=>parseStats({registeredTickets:1,totalTickets:13000,updatedAt:'invalid'}));
+console.log('PASS: ticket leading zeros and bounds; stats zero, capacity, integers and timestamp. Registration integration not exercised.');

@@ -60,3 +60,41 @@ Thumbs.db
 
 # Ready site assets (e.g. public/assets and src/assets) remain tracked.
 # Do not add blanket image ignores such as *.png, *.jpg or *.svg.
+
+# Vinext, Workers, local stores and generated TypeScript state
+/.vinext/
+/out/
+/.wrangler/
+/.sites-runtime/
+/.outputs/
+/outputs/
+/.pnpm-store/
+/.vercel/
+/.codex/
+/.agents/
+.dev.vars
+.dev.vars.*
+*.tsbuildinfo
+next-env.d.ts
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+
+# Local art direction, source uploads and review exports
+/docs/brandbook/
+/docs/assets/
+/docs/games/client-brief*
+/docs/*prompts*
+/docs/title-review.*
+/public/reports/
+/public/review/
+/public/walk-assets/references/
+*.blend
+*.blend1
+
+# These two files are authored build tooling; other build output stays ignored.
+!/build/
+/build/*
+!/build/sites-vite-plugin.ts
+!/build/sites-vite-plugin.LICENSE

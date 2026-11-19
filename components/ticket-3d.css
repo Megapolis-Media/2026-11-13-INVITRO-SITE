@@ -1,0 +1,17 @@
+.event-ticket {
+  width: 100%;
+  position: relative;
+  aspect-ratio: 2 / 1;
+  perspective: 1050px;
+}
+.event-ticket-face {
+  width: 100%;
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transition: transform 150ms ease-out;
+  filter: drop-shadow(0 2px 0 #b8d6da) drop-shadow(0 9px 11px #004d6520);
+}
+.event-ticket-face > svg {display: block; width: 100%; height: auto}
+#telecenter .account-tickets > div > p {margin: 15px 0 8px}
+@media (prefers-reduced-motion: reduce) {
+  .event-ticket-face, .event-ticket.ticket-arrival {transform: none; transition: none; animation: none}
+}

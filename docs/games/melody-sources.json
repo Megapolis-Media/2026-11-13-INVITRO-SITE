@@ -1,0 +1,194 @@
+[
+  {
+    "id": "m01",
+    "title": "Jingle Bells — Бубенцы",
+    "audio": "/games-v2/audio/m01.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Jingle%20Bells.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m02",
+    "title": "We Wish You a Merry Christmas",
+    "audio": "/games-v2/audio/m02.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/We%20Wish%20You%20a%20Merry%20Christmas.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m03",
+    "title": "Щедрик — Carol of the Bells",
+    "audio": "/games-v2/audio/m03.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Carol%20of%20the%20Bells.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m04",
+    "title": "Deck the Halls — Украшаем дом",
+    "audio": "/games-v2/audio/m04.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Deck%20the%20Hall.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m05",
+    "title": "O Christmas Tree — О ёлочка",
+    "audio": "/games-v2/audio/m05.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/O%20Christmas%20Tree.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m06",
+    "title": "Auld Lang Syne — Старые добрые времена",
+    "audio": "/games-v2/audio/m06.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Auld%20Lang%20Syne.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m07",
+    "title": "Silent Night — Тихая ночь",
+    "audio": "/games-v2/audio/m07.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Silent%20Night.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m08",
+    "title": "Joy to the World",
+    "audio": "/games-v2/audio/m08.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Joy%20to%20the%20World!.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m09",
+    "title": "God Rest Ye Merry, Gentlemen",
+    "audio": "/games-v2/audio/m09.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/God%20Rest%20You%20Merry,%20Gentlemen.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m10",
+    "title": "Ding Dong Merrily on High",
+    "audio": "/games-v2/audio/m10.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Ding%20Dong%20Merrily%20on%20High.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m11",
+    "title": "Good King Wenceslas",
+    "audio": "/games-v2/audio/m11.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Good%20King%20Wenceslas-Stainer.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m12",
+    "title": "The First Noel",
+    "audio": "/games-v2/audio/m12.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/The%20First%20No%C3%ABl.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m13",
+    "title": "Hark! The Herald Angels Sing",
+    "audio": "/games-v2/audio/m13.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Hark!%20the%20Herald%20Angels%20Sing.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m14",
+    "title": "Angels We Have Heard on High",
+    "audio": "/games-v2/audio/m14.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Angels%20We%20Have%20Heard%20on%20High.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m15",
+    "title": "O Come, All Ye Faithful",
+    "audio": "/games-v2/audio/m15.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/O%20Come,%20All%20Ye%20Faithful.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m16",
+    "title": "O Holy Night — Святая ночь",
+    "audio": "/games-v2/audio/m16.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/O%20Holy%20Night.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m17",
+    "title": "The Twelve Days of Christmas",
+    "audio": "/games-v2/audio/m17.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/The%20Twelve%20Days%20of%20Christmas.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m18",
+    "title": "We Three Kings",
+    "audio": "/games-v2/audio/m18.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/We%20Three%20Kings%20of%20Orient%20Are.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m19",
+    "title": "Greensleeves — What Child Is This",
+    "audio": "/games-v2/audio/m19.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/What%20Child%20is%20This.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m20",
+    "title": "I Saw Three Ships",
+    "audio": "/games-v2/audio/m20.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/I%20Saw%20Three%20Ships.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m21",
+    "title": "The Holly and the Ivy",
+    "audio": "/games-v2/audio/m21.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/The%20Holly%20and%20the%20Ivy-English.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m22",
+    "title": "Fum, Fum, Fum",
+    "audio": "/games-v2/audio/m22.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Fum,%20Fum,%20Fum.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m23",
+    "title": "Pat-a-Pan",
+    "audio": "/games-v2/audio/m23.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Pat-a-Pan.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  },
+  {
+    "id": "m24",
+    "title": "Bring a Torch, Jeannette, Isabella",
+    "audio": "/games-v2/audio/m24.mp3",
+    "source": "https://acollectionofchristmascarols.com/downloads/Bring%20a%20Torch,%20Jeanette,%20Isabella!.midi",
+    "arrangement": "Instrumental bell/piano rendering from reusable MIDI score; no vocals",
+    "seconds": 19
+  }
+]

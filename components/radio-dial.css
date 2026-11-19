@@ -1,0 +1,68 @@
+.rigonda-dial{width:100%;max-width:1160px;margin:0 auto;color:#005564;container-type:inline-size}
+.rigonda-object{position:relative;isolation:isolate;width:100%}
+.rigonda-body{display:block;width:100%;height:auto}
+body .broadcast-site .rigonda-title,body .ny-site .rigonda-title{position:absolute;top:5.8%;left:0;width:100%;margin:0;text-align:center;font:400 clamp(13px,2.4cqw,27px)/1 'Oswald',sans-serif;letter-spacing:.16em;color:#005564}
+.rigonda-glass{position:absolute;left:5.46%;right:5.83%;top:15%;height:62%;overflow:hidden;border-radius:8px;isolation:isolate}
+.rigonda-print{position:absolute;inset:3% 3% 4%;z-index:1;color:#cee3e2;text-shadow:0 1px 1px #002f38;filter:drop-shadow(0 1px 1px #002831)}
+.rigonda-indices{position:absolute;top:0;left:0;right:0;height:10%;font:400 clamp(10px,2.2cqw,23px)/1 'Oswald',sans-serif;color:#b8d5d3;letter-spacing:.12em}
+.rigonda-indices>span{position:absolute;transform:translateX(-50%)}
+.rigonda-top-ticks,.rigonda-bottom-ticks{position:absolute;left:0;right:0;background:repeating-linear-gradient(90deg,#b8d4d580 0 1px,transparent 1px 1%);border-bottom:1px solid #c2dedd99}
+.rigonda-top-ticks{top:8%;height:5%}
+.rigonda-bottom-ticks{bottom:9%;height:4%}
+.rigonda-stations{position:absolute;left:0;right:0;top:17%;height:67%}
+.rigonda-station{position:absolute;left:var(--station-left);top:calc(var(--station-row)*1%);width:var(--station-width);padding-top:7px;font:400 clamp(12px,2.65cqw,30px)/1.04 'Oswald',sans-serif;text-transform:uppercase;letter-spacing:.02em;transition:color .4s,text-shadow .4s;color:#d7e4df}
+.rigonda-station-name{display:block}
+.rigonda-station-name>span{display:block;white-space:nowrap}
+.rigonda-station-pin{position:absolute;left:var(--pin-offset);top:0;height:3px;width:13px;transform:translateX(-50%);background:#b6d9d6;border-radius:1px}
+.rigonda-station.is-tuned{color:#f7faf0;text-shadow:0 0 9px #d7faff55}
+.rigonda-station.is-tuned .rigonda-station-pin{background:#ff8a48;box-shadow:0 0 6px #ff7b3944}
+.rigonda-frequency{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;font:400 clamp(8px,1.65cqw,18px)/1 'Oswald',sans-serif;letter-spacing:.08em;color:#a4c8ca}
+.rigonda-needle-track{position:absolute;inset:3% 3% 4%;z-index:2;pointer-events:none;transform:translateX(-42%);will-change:transform}
+.rigonda-needle-track>span{position:absolute;left:50%;top:0;bottom:0;width:clamp(1px,.28cqw,3px);background:linear-gradient(90deg,#8d311e,#ff7b41,#f0a07c);box-shadow:2px 0 3px #0005;opacity:.94}
+.rigonda-front-glass{position:absolute;inset:0;z-index:3;pointer-events:none;background:linear-gradient(118deg,transparent 3%,#e2f8ff0b 9%,#e2f8ff16 13%,transparent 25%,transparent 75%,#9bc9db09 85%,transparent 96%);box-shadow:inset 0 3px 7px #001e2877,inset 0 -2px 5px #b4edff18;border-top:1px solid #d5ffff15}
+body .broadcast-site .broadcast-radio.radio-dial-section{background:#fff;color:#005564;padding-top:38px;padding-bottom:45px}
+.radio-dial-section .section-label{color:#005564}
+.radio-dial-section .radio-listening-bar{max-width:950px;display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0 auto}
+.radio-dial-section .broadcast-now-playing{margin:0;flex:1;max-width:500px;background:#f1fafb;border:1px solid #cee5ea}
+.radio-dial-section .radio-listening-bar>.broadcast-button{margin:0;flex-shrink:0}
+.radio-dial-section .broadcast-now-playing button{min-height:48px;min-width:48px}
+@media(max-width:700px){
+ body .broadcast-site .broadcast-radio.radio-dial-section{padding:24px 8px 32px}
+ .radio-dial-section .section-label{padding:0 12px;font-size:11px;margin-bottom:14px}
+ .radio-dial-section .section-label span:last-child{display:none}
+ .rigonda-station{font-size:clamp(12px,3.25cqw,22px);padding-top:5px;letter-spacing:0}
+ .rigonda-station-pin{width:9px;height:2px}
+ .rigonda-frequency{font-size:clamp(8px,2.25cqw,14px);letter-spacing:.025em}
+ .rigonda-indices{font-size:clamp(11px,2.9cqw,18px)}
+ .radio-dial-section .radio-listening-bar{flex-direction:column;align-items:stretch;gap:14px;padding:0 12px;margin-top:6px}
+ .radio-dial-section .broadcast-now-playing{width:100%;max-width:none}
+ .radio-dial-section .radio-listening-bar>.broadcast-button{justify-content:center}
+}
+@media(prefers-reduced-motion:reduce){.rigonda-station{transition:none}.rigonda-needle-track{will-change:auto}}
+
+/* KV Rigonda: generated material plate, live dial and separate tungsten light. */
+.ny-site .kv-radio .rigonda-object{transform:none;perspective:900px}
+.kv-radio-plate{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.kv-radio .rigonda-body{aspect-ratio:16/9;object-fit:fill}
+body .ny-site .kv-radio .rigonda-title{top:17.5%;font-size:clamp(10px,2.1cqw,24px);letter-spacing:.17em;color:#eaffff;text-shadow:0 1px 2px #005564}
+#radio .kv-radio .rigonda-glass{left:12.2%;right:12.2%;top:32%;height:28%;border-radius:12px;box-shadow:inset 0 8px 12px #001b2899;transform:translateZ(1px)}
+.kv-radio .rigonda-print{inset:4% 10% 6%;filter:none;transform:translateZ(4px);text-shadow:0 2px 2px #001b28}
+.kv-radio .rigonda-station{font-size:clamp(8px,1.92cqw,23px);line-height:1.06;padding-top:4px;letter-spacing:0;color:#f5e6bd}
+.kv-radio .rigonda-stations{top:24%;height:68%}
+.kv-radio .rigonda-indices{font-size:clamp(8px,1.6cqw,20px);color:#f6dfb1}
+.kv-radio .rigonda-frequency{display:none}
+.kv-radio .rigonda-top-ticks{top:14%;height:8%;background:repeating-linear-gradient(90deg,#f6dfb1a6 0 1px,transparent 1px 1%);border-color:#e9c77e66}
+.kv-radio .rigonda-bottom-ticks{bottom:0;height:3%}
+.kv-radio .rigonda-needle-track{inset:4% 10% 6%;z-index:2;filter:drop-shadow(5px 3px 2px #0009)}
+.kv-radio .rigonda-needle-track>span{width:2px;background:linear-gradient(90deg,#b94412,#ffce83,#ff5601);box-shadow:0 0 4px #ffb35980}
+.kv-radio .rigonda-front-glass{background:linear-gradient(112deg,#def9ff18 2%,transparent 21%,#fff4 22%,transparent 23%,transparent 78%,#e9ffff12);box-shadow:inset 0 2px 6px #001b2855;transform:translateZ(10px)}
+#radio .kv-radio .rigonda-glass:after{background:linear-gradient(90deg,#ffae555c,transparent 25%,transparent 75%,#ffae555c);box-shadow:inset 0 0 15px #ffc27355;opacity:var(--journey-power,0);transition:opacity .65s ease}
+.kv-lamplight{position:absolute;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 3% 50%,#ffb74b88,transparent 42%),radial-gradient(ellipse at 97% 50%,#ffb74b88,transparent 42%);opacity:var(--journey-power,0);transition:opacity .65s ease}
+#radio[data-flight-lit="true"] .kv-radio .rigonda-glass{box-shadow:inset 0 0 18px #ffb45c55,0 0 15px #ffc27322}
+#radio[data-flight-lit="true"] .kv-radio .rigonda-print{filter:brightness(1.14);text-shadow:0 0 3px #ffd58a66,0 2px 2px #001b28}
+#radio .kv-radio .rigonda-object:after{bottom:3%;background:radial-gradient(ellipse,#ffb35c55,transparent 70%)}
+#radio .kv-radio .flight-contact{top:15%;right:18%}
+@media(max-width:700px){.ny-radio-object:has(.kv-radio){margin-left:-22px;margin-right:-22px}.kv-radio .rigonda-station{font-size:clamp(8px,2.12cqw,16px)}.kv-radio .rigonda-station-pin{width:5px;height:1px}.kv-radio .rigonda-print{inset:4% 8% 6%}.kv-radio .rigonda-needle-track{inset:4% 8% 6%}}
+@media(prefers-reduced-motion:reduce){.kv-radio-plate{display:none}}
+.ny-site .ny-radio-object:has(.kv-radio){transform:none;filter:none}
+.kv-radio .rigonda-body,.kv-radio-plate{-webkit-mask-image:linear-gradient(180deg,transparent,black 13%,black 87%,transparent),linear-gradient(90deg,transparent,black 4%,black 96%,transparent);mask-image:linear-gradient(180deg,transparent,black 13%,black 87%,transparent),linear-gradient(90deg,transparent,black 4%,black 96%,transparent);-webkit-mask-composite:source-in;mask-composite:intersect}

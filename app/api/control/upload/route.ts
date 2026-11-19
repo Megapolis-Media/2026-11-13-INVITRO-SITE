@@ -1,0 +1,4 @@
+import {authorize} from '@/lib/event/server';
+import {sameOrigin,settings,responseError,fail} from '@/lib/participant/server';
+export const dynamic='force-dynamic';
+export async function POST(req:Request){try{sameOrigin(req);authorize(req);if(Number(req.headers.get('content-length'))>31*1024*1024)throw fail('Файл слишком большой. До 30 МБ; большой ролик подключите ссылкой.',413);const f=(await req.formData()).get('file');if(!(f instanceof File)||f.size>30*1024*1024||!['image/jpeg','image/png','image/webp','video/mp4','audio/mpeg'].includes(f.type))throw fail('Можно загрузить JPG, PNG, WebP, MP4 или MP3 до 30 МБ.');const id=crypto.randomUUID();await settings().MEDIA.put('event/'+id,await f.arrayBuffer(),{httpMetadata:{contentType:f.type}});return Response.json({url:'/api/event/media/'+id})}catch(e){return responseError(e)}}

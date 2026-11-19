@@ -1,0 +1,158 @@
+/* A single hero → radio flight; all site content retains its original layout. */
+.flight-world{position:fixed;inset:0;z-index:12;pointer-events:none;overflow:hidden;visibility:hidden}
+.flight-world canvas{position:absolute;inset:0;pointer-events:none}
+.flight-ball-fallback{position:absolute;left:0;top:0;border-radius:50%;background:radial-gradient(circle at 30% 24%,#e5fcff 0,#54daec 14%,#00acc6 48%,#005574 95%);box-shadow:inset -3px -5px 8px #003c5a66,inset 2px 3px 6px #b5faff88;will-change:transform;display:grid;place-items:center}
+.flight-ball-fallback[hidden]{display:none}
+.flight-ball-fallback span{display:grid;place-items:center;width:65%;height:65%;border-radius:50%;background:linear-gradient(135deg,#fff,#d6f4fb);color:#005564;font:bold 26px/1 Arial;box-shadow:inset -2px -3px 5px #638f9f33}
+.flight-contact{--contact:0;position:absolute;right:6%;top:0;width:62px;height:17px;transform:translateY(-45%);border-radius:50%;background:linear-gradient(#fff,#99bbc6 60%,#466f7b);box-shadow:0 3px 5px #003b4f44;z-index:5;pointer-events:none}
+.flight-contact:before{content:'';position:absolute;inset:0 7px 5px;border-radius:50%;background:linear-gradient(#ffad65,#ff5601);border:1px solid #ffb78e;transform:translateY(calc(-5px + var(--contact)*5px));box-shadow:0 3px 0 #aa3c0a}
+.flight-contact:after{content:'';position:absolute;inset:-3px 8px 6px;border-radius:50%;background:#004153;filter:blur(4px);opacity:calc(var(--contact)*.3)}
+/* Explicit light layers above the baked radio image: visible even without WebGL. */
+#radio .rigonda-glass{box-shadow:0 0 0 1px #a9f5ff33;transition:box-shadow .18s ease}
+#radio .rigonda-glass:after{content:'';position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;background:linear-gradient(180deg,#b9faff55,transparent 25%,#00acc62b 75%,#b9faff44);box-shadow:inset 0 0 18px #64eaffaa,inset 0 2px 3px #e9ffff;opacity:var(--journey-power,0);transition:opacity .18s ease}
+#radio .rigonda-object:after{content:'';position:absolute;left:10%;right:10%;bottom:-8%;height:14%;pointer-events:none;background:radial-gradient(ellipse,#00acc680,transparent 70%);filter:blur(10px);opacity:var(--journey-power,0);transition:opacity .18s ease}
+#radio[data-flight-lit="true"] .rigonda-glass{box-shadow:0 0 0 2px #b8faff,0 0 22px #00acc6a6,0 0 50px #00acc640}
+#radio[data-flight-lit="true"] .rigonda-print{color:#fff;text-shadow:0 0 5px #b8ffff;filter:brightness(1.35)}
+#radio[data-flight-lit="true"] .flight-contact:before{background:linear-gradient(#fff2da,#ff9a3e);box-shadow:0 0 8px #ffb45d,0 0 18px #ff560166}
+
+@media(max-width:700px){
+ .flight-contact{width:48px;height:13px;right:2%}
+ /* Reserve a clean right-side flight corridor; no line or overlay through copy. */
+ #radio .ny-section-heading{padding-right:54px}
+ #radio .ny-section-heading h2{font-size:clamp(30px,7.7vw,48px)}
+ #radio .ny-section-heading .ny-button{max-width:100%}
+}
+@media(prefers-reduced-motion:reduce){.flight-world,.flight-contact{display:none}}
+
+.radio-unlock{font-size:14px!important;color:#005564!important;background:#fff9;border-radius:12px;padding:12px}
+
+.flight-ball-promo{position:absolute;left:0;top:0;border-radius:50%;overflow:hidden;will-change:transform;filter:drop-shadow(0 4px 4px #00334222);background:#00a7ba;clip-path:ellipse(49% 47% at 50% 50%)}
+.flight-ball-promo i{display:block;width:100%;height:100%;background-image:url('/media/promo-ball-frame.jpg');background-repeat:no-repeat;background-size:680.85% 382.98%;background-position:15.26% 72.93%}
+.flight-ball-shadow{position:absolute;left:0;top:0;height:9px;border-radius:50%;background:#003b50;filter:blur(5px);transform-origin:center;pointer-events:none}
+
+.flight-orb{position:absolute;border-radius:50%;background:radial-gradient(ellipse at 29% 22%,#fff 0%,#c9fbff 5%,#4ddde8 15%,#00b4c5 34%,#008ba0 62%,#004351 91%);box-shadow:inset -5px -7px 12px #002b4566,inset 2px 2px 4px #e7ffff80;overflow:hidden;will-change:transform}.flight-orb[hidden]{display:none}.flight-orb i{position:absolute;inset:4%;border:1px solid #b8f8ff75;border-radius:50%;transform:rotate(var(--roll)) scaleX(.38);box-shadow:0 0 2px #d9ffff55}.game-studios[data-ball-invite=true] .studio-card:first-child{box-shadow:0 8px 0 #00a5bb55,0 0 30px #00adc433}.game-studios[data-ball-invite=true] .game-mechanical-button{box-shadow:0 4px 0 #a94112,0 0 20px #ff8f4880}.game-studios[data-ball-invite=true] .studio-card:first-child .studio-card-copy>span:before{content:'Ваш ход · ';color:#008ba0}.flight-world{z-index:20}
+
+/* v56: scroll-scrubbed contact mechanisms, always reversible, no pointer interception. */
+.card-mechanism{position:absolute;left:50%;top:50%;width:100%;aspect-ratio:1344/752;transform:translate(-50%,-50%);pointer-events:none;container-type:inline-size}
+@media(min-width:641px){.card-mechanism{height:100%;width:auto;min-width:100%}}
+.card-mechanism *{position:absolute;box-sizing:border-box;pointer-events:none}
+.drum-plane{left:24%;top:32%;width:51%;height:35%;border-radius:50%;overflow:hidden;box-shadow:0 2px 1px #d8fbff,0 5px 2px #00566d55;opacity:.94}
+.drum-sectors{inset:-22% 0;border-radius:50%;background:repeating-conic-gradient(from 12deg,#effcff 0 30deg,#079cce 30deg 60deg);border:4px solid #c9edf6;transform:rotate(var(--drum-turn,0deg));box-shadow:inset 0 0 15px #00384c88}
+.drum-hub{width:9%;height:19%;left:45.5%;top:40.5%;border-radius:50%;background:radial-gradient(at 30% 20%,#fff,#8db7c7 45%,#244c62);box-shadow:0 2px 3px #00374d}
+.vinyl-plane{left:30%;top:32%;width:42%;height:29%;border-radius:50%;overflow:hidden;box-shadow:0 3px 1px #c6e5f0,0 5px 4px #003d55;opacity:.96}
+.vinyl-disc{left:0;top:-25%;width:100%;height:150%;border-radius:50%;background:repeating-radial-gradient(circle,#06374d 0 2px,#14516b 3px,#022a40 4px);transform:rotate(var(--vinyl-turn,0deg))}
+.vinyl-disc:after{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(transparent 0 30deg,#c4f7ff66 45deg,transparent 65deg 180deg,#83cdea88 210deg,transparent 240deg)}
+.vinyl-disc i{left:36%;top:36%;width:28%;height:28%;border-radius:50%;background:#ff710c;box-shadow:inset 0 0 4px #ffd3a5}
+.vinyl-disc i:after{content:'';position:absolute;left:46%;top:46%;width:8%;height:8%;background:#d8eff4;border-radius:50%}
+.vinyl-arm{left:56%;top:26%;width:18%;height:4%;border-radius:8px;background:linear-gradient(#fff,#617d92 48%,#e1f4ff 65%,#3b5d78);transform-origin:90% 50%;transform:rotate(calc(-32deg + var(--scratch-angle,0deg)));box-shadow:0 3px 3px #00223888;z-index:3}
+.vinyl-arm i{left:-2%;top:0;width:16%;height:140%;border-radius:2px;background:linear-gradient(#ffb66c,#ff5601);box-shadow:0 3px 2px #00394d88}
+.vinyl-lamps{left:63%;top:66%;width:8%;height:2.8%;display:flex;gap:10%;opacity:var(--vinyl-power,0)}
+.vinyl-lamps i{position:relative;width:26%;height:100%;border-radius:50%;background:#fff4b7;box-shadow:0 0 8px 3px #ffac43}
+.mail-cavity{left:69.7%;top:44%;width:9.1%;height:23%;border-radius:50% 50% 12% 12%;background:radial-gradient(ellipse at 55% 90%,#18667a,#002835 75%);border:2px solid #b1e8f2;box-shadow:inset 0 0 6px #00141c;opacity:var(--mail-open,0)}
+.mail-door{left:69.7%;top:44%;width:9.1%;height:23%;border-radius:50% 50% 12% 12%;border:2px solid #b8eff8;background:linear-gradient(120deg,#8de4eeaa,#008bac 35%,#006d8c 80%,#9fdae8);transform-origin:50% 100%;transform:perspective(250px) rotateX(calc(var(--mail-open,0)*-105deg));box-shadow:inset 0 0 0 2px #2c7e97,0 2px 3px #003f4c88}
+.mail-door i{left:32%;top:40%;width:24%;height:18%;border-radius:50%;background:radial-gradient(at 25% 15%,#fff,#daeaf6 35%,#355e70 60%,#e9f9ff);box-shadow:1px 1px 2px #003843}
+.mail-lever{left:82%;top:41%;width:2.5%;height:15%;background:linear-gradient(90deg,#ffb478,#ff5601 45%,#bd3c00);border-radius:6px;transform-origin:50% 90%;transform:rotate(calc(var(--mail-open,0)*65deg));box-shadow:1px 2px 2px #003f5a66}
+.flying-letter{left:70%;top:51%;width:12%;height:13%;border:1px solid #b3e0e8;border-radius:3px;background:linear-gradient(150deg,#fff,#c6edf5);box-shadow:2px 5px 8px #003d5a44;opacity:clamp(0,calc(var(--mail-open,0)*5),1);transform:translate(calc(var(--mail-open,0)*var(--letter-x)),calc(var(--mail-open,0)*var(--letter-y))) rotate(calc(var(--mail-open,0)*var(--letter-r))) scale(calc(.35 + var(--mail-open,0)*.65));z-index:4}
+.flying-letter:before{content:'';position:absolute;inset:0;clip-path:polygon(0 0,100% 0,50% 60%);background:linear-gradient(#fff,#c0e6ef);filter:drop-shadow(0 2px 1px #6395a7)}
+.flying-letter i{left:43%;top:43%;width:17%;height:24%;border-radius:50%;background:#ff5601}
+.letter-0{--letter-x:-240%;--letter-y:-165%;--letter-r:-22deg}.letter-1{--letter-x:-130%;--letter-y:-255%;--letter-r:12deg}.letter-2{--letter-x:15%;--letter-y:-210%;--letter-r:30deg}.letter-3{--letter-x:-330%;--letter-y:-35%;--letter-r:-36deg}
+.ny-site .studio-card-picture{mask-image:none}
+.studio-card-picture[data-ball-active=true]{box-shadow:inset 0 -6px 25px #8af0ff77}
+.ny-site .studio-card:hover img{transform:none}
+.ny-site .promo-tv-object{transform:rotate(var(--impact-rock,0deg));animation:none!important}
+@media(prefers-reduced-motion:reduce){.card-mechanism{display:none}.ny-site .promo-tv-object{transform:none!important}}
+
+/* Keep the original photographic KV finish on the rotating drum surface. */
+.drum-plane{top:27%;height:40%;opacity:1;box-shadow:none;border:0}
+.drum-texture{transform:rotate(var(--drum-turn,0deg));transform-origin:500px 500px}
+
+.vinyl-plane{left:28.2%;top:32.5%;width:35%;height:21%;opacity:1;box-shadow:0 2px 1px #003c5c;overflow:hidden}
+.vinyl-texture{transform:rotate(var(--vinyl-turn,0deg));transform-origin:500px 500px}
+.vinyl-arm{left:51.5%;top:33%;width:14.5%;height:3%;transform:rotate(calc(-32deg + var(--scratch-angle,0deg)));z-index:3}
+
+.ny-site .studio-card:hover{transform:none}
+/* Radio impact: spring cap rebounds, cabinet settles independently of scrolling. */
+#radio .kv-radio .rigonda-object{transform-origin:50% 86%;transform:rotate(var(--radio-rock,0deg)) translateY(var(--radio-jolt,0px));will-change:transform}
+.flight-contact:before{transform:translateY(calc(-5px + var(--spring,0)*7px))}
+.kv-radio.is-tuning .kv-lamplight{opacity:1;filter:brightness(1.25)}
+.kv-radio.is-tuning .rigonda-glass{box-shadow:0 0 16px #ffb75c66,inset 0 0 15px #ffbf6355}
+@media(prefers-reduced-motion:reduce){#radio .kv-radio .rigonda-object{transform:none;will-change:auto}}
+
+/* v59: preserve the intact KV perspective, hub and upright pins. Never rotate a raster crop. */
+.drum-contact-light{left:24%;top:27%;width:51%;height:40%;border-radius:50%;border:2px solid #a8f9ff;box-shadow:0 0 9px #64e9ff,inset 0 0 9px #80edff;opacity:0;transition:opacity .18s}
+.studio-card-picture[data-ball-active=true] .drum-contact-light{opacity:.65}
+
+/* Motion direction 60 — quiet, weighted contacts; stable reading planes. */
+.card-mechanism.mechanism-yak{inset:0;width:100%;height:100%;aspect-ratio:auto;transform:none}
+.drum-model{inset:0;background:radial-gradient(ellipse at 50% 20%,#edffff,#a0e5f1 52%,#00acc6);opacity:0;transition:opacity .25s}
+.drum-model canvas{inset:0;width:100%;height:100%;display:block}
+.studio-card-picture[data-model-ready=true] .drum-model{opacity:1}
+.studio-card-picture[data-model-ready=true]>img{visibility:hidden}
+.drum-model:after{content:'';position:absolute;inset:0;box-shadow:inset 0 -12px 28px #e6faff80;pointer-events:none}
+.vinyl-start-key{left:64.5%;top:64%;width:4%;height:3%;border-radius:4px;background:linear-gradient(#ffb57b,#ff5601);box-shadow:0 3px 0 #a33b10,0 5px 6px #003c5944;transform:translateY(calc(var(--vinyl-key,0)*2px))}
+.vinyl-arm{transform:perspective(500px) rotate(calc(-40deg + var(--scratch-angle,0deg)));transition:none;box-shadow:0 3px 3px #00223866}
+.flying-letter{width:10%;height:12%;filter:drop-shadow(0 3px 3px #003f5a22)}
+.letter-0{--letter-x:-130%;--letter-y:110%;--letter-r:-12deg}
+.letter-1{--letter-x:-190%;--letter-y:125%;--letter-r:4deg}
+.letter-2{--letter-x:-240%;--letter-y:115%;--letter-r:13deg}
+.mail-door{backface-visibility:visible;transform-style:preserve-3d;border-bottom-width:4px}
+.mail-door:after{content:'';position:absolute;inset:3px;border-radius:inherit;box-shadow:inset 0 0 12px #e1ffff77}
+.game-room>header{position:relative;padding-right:130px!important}
+.game-ball-dock{position:absolute;right:62px;top:34px;width:54px;height:18px;border-radius:50%;border:3px solid #dafaff;box-shadow:inset 0 6px 7px #004f6955,0 4px 0 #5e9ba9;background:#85c6d3}
+.game-ball-dock:after{content:'';position:absolute;inset:1px;border-radius:50%;border:1px solid #efffff}
+.ny-site .studio-cards{display:grid;grid-template-columns:1fr;gap:72px}
+.ny-site .studio-card{display:grid;grid-template-columns:58% 42%;align-items:stretch;border-radius:28px;overflow:hidden;background:linear-gradient(125deg,#f8feff,#e0f4f8);box-shadow:0 6px 0 #bfdfe6,0 22px 45px #004c6010}
+.ny-site .studio-card-picture{aspect-ratio:16/9}
+.ny-site .studio-card-copy{padding:clamp(24px,3.5vw,54px);display:flex;flex-direction:column;justify-content:center}
+.ny-site .studio-card-copy h3{font-size:clamp(27px,3.1vw,44px)}
+.ny-site .studio-card-copy p{min-height:0}
+.ny-site .studio-card-copy>span{margin-top:24px}
+.ny-site .studio-card-number,.ny-site .studio-card-count{z-index:4}
+.ny-site .studio-card:focus-visible{outline:3px solid #ff5601;outline-offset:5px}
+#radio[data-flight-lit=true] .rigonda-glass{box-shadow:0 0 0 1px #ffe2b5,0 0 18px #ffc16a44}
+#radio[data-flight-lit=true] .rigonda-print{filter:none;text-shadow:0 0 3px #ffdf9c55}
+#radio .rigonda-glass:after{background:linear-gradient(160deg,#ffe5ad33,transparent 40%,#ffbd5c14);box-shadow:inset 0 0 18px #ffbd5c33}
+.ny-site .world-track{opacity:.45}
+.ny-site .world-track .rail-shadow{stroke-width:12;filter:blur(4px)}
+.ny-site .world-track .rail-body{stroke-width:9}
+.ny-site .world-track .rail-glass{stroke-width:6}
+.ny-site .world-track .rail-edge{stroke-width:1;transform:translateY(-3px)}
+@media(max-width:700px){
+ .ny-site .studio-card{display:block;border-radius:24px}
+ .ny-site .studio-cards{gap:64px;margin-left:5px;margin-right:5px}
+ .ny-site .studio-card-copy{padding:26px 26px 32px}
+ .ny-site .studio-card-copy h3{font-size:30px}
+ .game-room>header{padding-right:115px!important}
+ .game-ball-dock{right:51px;top:30px;width:44px;height:16px}
+ .cinema-image:before{content:'';position:absolute;z-index:2;inset:-2px 0 auto;height:25%;background:linear-gradient(#12b3d2,transparent);pointer-events:none}
+}
+@media(prefers-reduced-motion:reduce){.drum-model{transition:none}.ny-site .world-track{display:none}}
+.game-world .drum-model{position:absolute;inset:0;z-index:1}
+.game-world[data-model-ready=true] .drum-model{opacity:1}
+.game-world[data-model-ready=true] .game-scene>img{visibility:hidden}
+.game-world .game-world-bottom{z-index:3}
+
+/* Keep intrinsic artwork dimensions inside its assigned grid column. */
+.ny-site .studio-card-picture,.ny-site .studio-card-copy{min-width:0;width:100%}
+.ny-site .studio-card-picture>img{display:block;max-width:100%}
+.flight-world .flight-speech {text-align:center;font-size:clamp(13px,1.2vw,19px);line-height:1.16;font-weight:700;letter-spacing:-.025em}
+.flight-world .flight-speech {z-index:2;padding:6px 14px 7px;border-radius:15px;background:rgba(238,253,254,.94);color:#064855;box-shadow:0 2px 9px #0046591c;text-shadow:none}
+/* The launch actor is available in every graphics mode, including the light mobile path. */
+.ny-site #ball-journey:not([hidden]) {display:block}
+#ball-journey .flight-orb {left:0;top:0;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+
+/* Each view of the numbered ball is a frame of the approved broadcast film. */
+.ny-site #ball-journey .flight-orb:not([hidden]){display:block;background:url('/hero-v84/orb23.webp') center/contain no-repeat;box-shadow:none;overflow:visible;border-radius:0}
+#ball-journey .flight-orb:after{display:none}
+.film-ball-surface{position:absolute;inset:0;background:url('/hero-v84/orb23-turn.webp') no-repeat;background-size:1300% 100%;will-change:transform}
+
+.ny-site #ball-journey .flight-orb[data-film-ready=true]{background-image:none}
+/* The feet stay planted while the drum discharges down the lip. */
+.solo-hero[data-impulse=true] .solo-drum picture{display:block;transform-origin:43% 93%;animation:lotto-release .7s both}
+@keyframes lotto-release{0%,38%,100%{transform:none}49%{transform:translate(-.8%,-.6%) rotate(-2.7deg)}66%{transform:translate(.3%,0) rotate(1.3deg)}84%{transform:rotate(-.45deg)}}
+#ball-journey .flight-orb{width:384px;height:384px;transform-origin:0 0}
+#radio[data-impulse=true] .flight-contact:before{animation:receiver-spring .65s both}
+@keyframes receiver-spring{0%,100%{transform:translateY(-5px)}17%,26%{transform:translateY(2px)}56%{transform:translateY(-7px)}78%{transform:translateY(-4px)}}
+
+.flight-streak {position:absolute;left:0;top:0;height:2px;transform-origin:left center;pointer-events:none;border-radius:50%;
+ background:linear-gradient(90deg,transparent,rgba(0,113,131,.15) 50%,rgba(0,111,131,.48))}

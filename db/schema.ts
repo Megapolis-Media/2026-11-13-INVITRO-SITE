@@ -15,3 +15,7 @@ export const gameRounds=sqliteTable('game_rounds',{id:text('id').primaryKey(),us
 export const eventControl=sqliteTable('event_control',{id:integer('id').primaryKey(),draft:text('draft').notNull(),published:text('published').notNull(),revision:integer('revision').notNull().default(0),updated:integer('updated').notNull()});
 export const eventAudit=sqliteTable('event_audit',{id:text('id').primaryKey(),action:text('action').notNull(),created:integer('created').notNull(),revision:integer('revision').notNull()});
 export const overlayState=sqliteTable('overlay_state',{id:integer('id').primaryKey(),ticket:integer('ticket'),visible:integer('visible').notNull().default(0),revision:integer('revision').notNull().default(0),updated:integer('updated').notNull()});
+
+export const gameCompletions=sqliteTable('game_completions',{
+ user:text('user').notNull(),game:text('game').notNull(),question:text('question').notNull()
+},t=>[uniqueIndex('game_completions_user_game_question').on(t.user,t.game,t.question)]);

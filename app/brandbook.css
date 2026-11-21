@@ -62,7 +62,7 @@ body .radio-atelier:not(.ready) canvas{visibility:hidden}
 /* Project title: the opener's two-line hierarchy in the brand palette.
    This is an editorial show title; the official wordmark stays intact in the header. */
 body .world-hero{grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:32px 5%;padding-top:32px;background:linear-gradient(115deg,#fff 22%,#f0fafb 100%);min-height:0}
-body .project-title{grid-column:1;grid-row:2;display:flex;flex-direction:column;align-items:flex-start;gap:12px;width:100%;margin:20px 0 12px;padding:0 16px 16px 0;font-family:'Arial Black','Arial',sans-serif;font-style:normal;font-weight:900;letter-spacing:-.045em;line-height:.94;text-align:left;isolation:isolate}
+body .project-title{grid-column:1;grid-row:2;display:flex;flex-direction:column;align-items:flex-start;gap:12px;width:100%;margin:20px 0 12px;padding:0 16px 16px 0;font-family:var(--iv-display);font-style:normal;font-weight:900;letter-spacing:-.045em;line-height:.94;text-align:left;isolation:isolate}
 .project-title>span{display:block;white-space:nowrap;color:#fff;-webkit-text-stroke:1px #97c4cd;paint-order:stroke fill;text-shadow:1px 1px 0 #b6d9dd,2px 2px 0 #90c2cc,3px 3px 0 #00acc6,4px 4px 0 #008ea4,5px 5px 0 #007d91,6px 6px 0 #006c7e,7px 7px 0 #005f70,8px 8px 0 #005564,9px 10px 0 #004b59,12px 16px 15px #00556422}
 .project-title-top{font-size:clamp(31px,5.7vw,100px);letter-spacing:-.06em}
 .project-title-brand{font-size:clamp(66px,10.2vw,180px);letter-spacing:-.055em}

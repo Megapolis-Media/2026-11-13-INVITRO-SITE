@@ -7,3 +7,10 @@
 
 .game-mechanical-button,.game-next{display:inline-flex;align-items:center;justify-content:center;gap:9px}.game-world::before{content:"";position:absolute;inset:-30px;background-image:var(--scene-image);background-size:cover;background-position:center;filter:blur(28px);opacity:.72}.game-world::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#0eb4df22,transparent 65%,#effcff88);pointer-events:none}.game-scene{z-index:1}.game-world-bottom,.game-meter{z-index:2}
 @media(min-width:1001px){.game-scene img,.game-scene video{top:45%;left:0;right:0;bottom:auto;transform:translateY(-50%);height:auto;aspect-ratio:16/9;object-fit:contain;mask-image:linear-gradient(to bottom,transparent,#000 13%,#000 86%,transparent)}.game-world{min-height:500px}}
+
+.game-note-bid { border: 0; padding: 0; margin: 12px 0 18px; min-inline-size: 0; }
+.game-note-bid legend { margin-bottom: 8px; font-weight: 600; }
+.game-note-bid > div { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 3px; max-width: 350px; }
+.game-note-bid button { font: inherit; font-weight: 700; min-height: 44px; padding: 0; border: 1px solid #a9cfd4; border-radius: 8px; background: #fff; color: #005366; cursor: pointer; }
+.game-note-bid button[aria-pressed="true"] { color: white; background: #005366; border-color: #005366; }
+.game-note-bid button:focus-visible { outline: 3px solid #e95500; outline-offset: 1px; }

@@ -6,7 +6,7 @@
 .promo-tv-rig{position:absolute;inset:0;transform-origin:50% 89%}
 .promo-tv-rig[data-rocking=true]{will-change:transform}
 
-.tv-retry{text-align:center;color:#005265;font:600 14px/1.4 'Code Next',Arial,sans-serif}
+.tv-retry{text-align:center;color:#005265;font:600 14px/1.4 var(--iv-body)}
 /* The transparent edge of the cabinet extends over the control row. */
 .promo-tv-object{pointer-events:none}
 .promo-tv-controls{position:relative;z-index:2}

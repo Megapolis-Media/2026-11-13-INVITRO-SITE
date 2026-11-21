@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useRef,useState} from 'react';
 import * as T from 'three';
+import {geometryUrl} from 'virtual:invitro-typography';
 import {FontLoader} from 'three/addons/loaders/FontLoader.js';
 import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -31,7 +32,7 @@ export default function CountdownStage({values}:{values:string[]}){
    fm.fragmentShader=fm.fragmentShader.replace('varying vec4 vUv;','varying vec4 vUv; varying vec3 vFloorWorld;').replace('vec4( blendOverlay( base.rgb, color ), 1.0 )','vec4( base.rgb, base.a * 0.15 * (1.0 - smoothstep(0.5, 6.0, abs(vFloorWorld.z - 0.5))) )');
    floor.rotation.x=-Math.PI/2;floor.position.y=-.025;scene.add(floor);
    const shadow=mesh(scene,new T.PlaneGeometry(80,80),new T.ShadowMaterial({color:'#5e95a0',opacity:.10,depthWrite:false}),0,-.015,0);shadow.rotation.x=-Math.PI/2;shadow.castShadow=false;
-   font=await new FontLoader().loadAsync('/lottery/counter-font.json');if(dead)return;
+   font=await new FontLoader().loadAsync(geometryUrl);if(dead)return;
    // Four individual enamel modules with cyan depth and white split-flap faces.
    for(let k=0;k<4;k++){
     const x=(k-1.5)*3;

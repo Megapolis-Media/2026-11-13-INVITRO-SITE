@@ -12,14 +12,36 @@ function prepare(query){let args=[];const q={bind(...v){args=v;return q},async f
 const objects=new Map();const bindings={DB:{prepare,async batch(list){sql.exec('BEGIN');try{const v=await Promise.all(list.map(q=>q.run()));sql.exec('COMMIT');return v}catch(e){sql.exec('ROLLBACK');throw e}}},MEDIA:{async put(key,data){objects.set(key,await new Response(data).arrayBuffer())},async get(key){return objects.has(key)?{body:objects.get(key)}:null},async delete(key){objects.delete(key)}}};
 globalThis.__testEnv=bindings;
 const compile=(src)=>ts.transpileModule(src,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
-await fs.writeFile(path.join(dir,'server.mjs'),compile((await fs.readFile('lib/participant/server.ts','utf8')).replace('import {env} from \'cloudflare:workers\';','const env=globalThis.__testEnv;')));
-await fs.writeFile(path.join(dir,'route.mjs'),compile((await fs.readFile('app/api/participant/route.ts','utf8')).replace("'@/lib/participant/server'","'./server.mjs'")));
-for(const [source,target] of [['lib/broadcast/catalog.ts','catalog.mjs'],['lib/broadcast/server.ts','broadcast-server.mjs'],['app/api/messages/route.ts','messages.mjs'],['app/api/studio/route.ts','studio.mjs']])await fs.writeFile(path.join(dir,target),compile((await fs.readFile(source,'utf8')).replaceAll("'@/lib/participant/server'","'./server.mjs'").replaceAll("'@/lib/broadcast/catalog'","'./catalog.mjs'").replaceAll("'./catalog'","'./catalog.mjs'").replaceAll("'@/lib/broadcast/server'","'./broadcast-server.mjs'")));
+// The real application modules run together; only platform bindings and bundled assets are local fixtures.
+const entries = {
+ 'lib/event/studio-authorization':'studio-auth','lib/participant/server':'server','lib/participant/agglomerations':'regions','lib/participant/ticket-mail':'mail',
+ 'app/api/participant/route':'route','app/api/games/route':'games','lib/games/catalog':'bank',
+ 'lib/games/words':'words','lib/games/melodies':'melodies','lib/broadcast/catalog':'catalog',
+ 'lib/broadcast/server':'broadcast-server','app/api/messages/route':'messages','app/api/studio/route':'studio',
+ 'lib/ticket-standalone':'ticket','lib/ticket-art':'art'
+};
+for(const [source,target] of Object.entries(entries)){
+ let js=compile(await fs.readFile(source+'.ts','utf8'));
+ js=js.replace(/from (['"])([^'"]+)\1/g,(match,quote,id)=>{
+  if(id==='cloudflare:workers')return "from './env.mjs'";
+  if(id==='virtual:invitro-typography')return "from './font.mjs'";
+  if(id.endsWith('?inline'))return "from './image.mjs'";
+  const local=id.startsWith('@/')?id.slice(2):path.posix.join(path.posix.dirname(source),id);
+  return entries[local]?"from './"+entries[local]+".mjs'":match;
+ });
+ await fs.writeFile(path.join(dir,target+'.mjs'),js);
+}
+await fs.writeFile(path.join(dir,'env.mjs'),'export const env=globalThis.__testEnv;');
+await fs.writeFile(path.join(dir,'font.mjs'),"export const ticketFontCSS='';");
+await fs.writeFile(path.join(dir,'image.mjs'),"export default 'data:image/jpeg;base64,';");
+const games=await import(path.join(dir,'games.mjs'));
+const {playable}=await import(path.join(dir,'bank.mjs'));
 const messagesRoute=await import(path.join(dir,'messages.mjs')),studioRoute=await import(path.join(dir,'studio.mjs'));
-const {POST,GET}=await import(path.join(dir,'route.mjs'));let session='',lastCode='',clock=Date.now();const actualNow=Date.now,actualFetch=globalThis.fetch;Date.now=()=>clock;globalThis.fetch=async(url,init)=>{assert.equal(url,'https://api.resend.com/emails');lastCode=JSON.parse(init.body).text.match(/\d{6}/)[0];return new Response('{}',{status:200})};
+const {POST,GET}=await import(path.join(dir,'route.mjs'));let session='',lastCode='',clock=Date.now();const actualNow=Date.now,actualFetch=globalThis.fetch;Date.now=()=>clock;globalThis.fetch=async(url,init)=>{assert.equal(url,'https://api.resend.com/emails');const code=JSON.parse(init.body).text.match(/код: (\d{6})/);if(code)lastCode=code[1];return new Response('{}',{status:200})};
 async function call(action,data={},cookie=session,origin='https://test.invalid'){const r=await POST(new Request('https://test.invalid/api/participant',{method:'POST',headers:{'Content-Type':'application/json',Origin:origin,Cookie:cookie,'cf-connecting-ip':'test'},body:JSON.stringify({action,...data})}));return{status:r.status,value:await r.json(),cookie:r.headers.get('set-cookie')}}
 try{
- assert.equal((await call('code',{email:'person@company.test'})).status,503,'Closed registration is explicit');
+ assert.equal((await call('code',{email:'person@company.test'})).status,403,'Closed registration is explicit');
+ sql.exec('INSERT INTO lottery_settings VALUES(1,1,13,0)');
  Object.assign(bindings,{RESEND_API_KEY:'test-only-transport',MAIL_FROM:'test@company.test',EMPLOYEE_EMAIL_DOMAINS:'company.test'});
  assert.equal((await call('code',{email:'person@outside.test'})).status,400,'Employee domain gate');
  assert.equal((await call('code',{email:'person@company.test'},'','https://evil.invalid')).status,403,'CSRF origin');
@@ -31,13 +53,36 @@ try{
  await call('code',{email:'person@company.test'});
  const verified=await call('verify',{email:'person@company.test',code:lastCode});assert.equal(verified.status,200);session=verified.cookie.split(';')[0];assert.match(verified.cookie,/HttpOnly; Secure; SameSite=Lax/);
  assert.equal((await call('verify',{email:'person@company.test',code:lastCode})).status,400,'OTP single-use');
- const p=await call('profile',{first:'Тест',last:'Участник',position:'Проверка',consent:true});assert.equal(p.status,200);assert.equal(p.value.tickets.length,1);assert.equal(p.value.number,'01 — 000');
- const again=await call('profile',{first:'Тест',last:'Участник',position:'Проверка',consent:true});assert.equal(again.value.tickets[0].id,1);assert.equal(sql.prepare('SELECT seq FROM sqlite_sequence WHERE name=?').get('tickets').seq,1,'Retry must not burn ticket numbers');
+ const p=await call('profile',{first:'Тест',last:'Участник',agglomeration:'Юг',consent:true});assert.equal(p.status,200);assert.equal(p.value.tickets.length,1);assert.equal(p.value.number,'01000');
+ const again=await call('profile',{first:'Тест',last:'Участник',agglomeration:'Юг',consent:true});assert.equal(again.value.tickets[0].id,1);assert.equal(sql.prepare('SELECT seq FROM sqlite_sequence WHERE name=?').get('tickets').seq,1,'Retry must not burn ticket numbers');
  assert.equal((await call('reward')).status,400,'No unearned ticket');
- for(const game of ['yak','pelsh']){assert.equal((await call('challenge',{game})).status,200);clock+=6000;assert.equal((await call('answer',{game,answer:'wrong'})).status,400);const answer=game==='yak'?'ГИРЛЯНДА|СУФЛЕР|КУРАНТЫ':'Jingle Bells';assert.equal((await call('answer',{game,answer})).status,200);await call('answer',{game,answer})}
- assert.equal((await call('reward')).status,400,'Points alone are insufficient');
- await call('heartbeat');for(let i=0;i<20;i++){clock+=30000;await call('heartbeat');await call('heartbeat')}
- const reward=await call('reward');assert.equal(reward.status,200);assert.equal(reward.value.seconds,600,'Repeated heartbeat cannot inflate time');assert.equal(reward.value.points,100,'Each studio grants points once');assert.equal(reward.value.tickets.length,2);
+ async function play(body,cookie=session){
+  const response=await games.POST(new Request('https://test.invalid/api/games',{method:'POST',headers:{Origin:'https://test.invalid',Cookie:cookie},body:JSON.stringify(body)}));
+  assert.equal(response.status,200);return await response.json();
+ }
+ assert.equal(playable.pelsh.length,10);
+ for(const [i,q] of playable.pelsh.entries()){
+  const {round}=await play({action:'start',game:'pelsh'});
+  assert.equal(round.cueNumber,i+1);
+  assert.deepEqual(round.choices.map(c=>c.title).sort(),[q.title,...q.distractors].sort());
+  assert.equal(round.clips.length,7);
+  for(const url of round.clips)assert.ok((await fs.stat('public'+url)).size>500);
+  const choose=title=>play({action:'answer',roundId:round.id,answer:round.choices.find(c=>c.title===title).id});
+  assert.equal((await choose(q.distractors[0])).round.solved,false);
+  const solved=await choose(q.title);
+  assert.equal(solved.profile.gameProgress.pelsh.solved,i+1);
+  assert.equal(solved.profile.tickets.length,i===9?2:1,'All ten distinct melodies are required');
+  assert.equal((await choose(q.title)).profile.tickets.length,i===9?2:1,'Retry cannot duplicate the ticket');
+  clock+=61000;
+ }
+ for(let i=0;i<playable.yak.length;i++){
+  const {round}=await play({action:'start',game:'yak'}),q=playable.yak.find(q=>q.hint===round.hint);
+  let result;
+  for(const letter of new Set(q.answer))result=await play({action:'letter',letter,roundId:round.id});
+  assert.equal(result.profile.gameProgress.yak.solved,i+1);
+  assert.equal(result.profile.tickets.length,2);
+  clock+=61000;
+ }
  const repeat=await call('reward');assert.equal(repeat.value.tickets.length,2);assert.equal(sql.prepare('SELECT seq FROM sqlite_sequence WHERE name=?').get('tickets').seq,2,'Second ticket is idempotent');
  const form=new FormData();form.set('file',new File([new Uint8Array([137,80,78,71])],'photo.png',{type:'image/png'}));form.set('kind','photo');form.set('consent','true');const up=await POST(new Request('https://test.invalid/api/participant',{method:'POST',headers:{Origin:'https://test.invalid',Cookie:session},body:form}));assert.equal(up.status,200);const media=await up.json();assert.equal(objects.size,1);assert.equal((await GET(new Request('https://test.invalid/api/participant?media='+media.id,{headers:{Cookie:session}}))).status,200);assert.equal((await GET(new Request('https://test.invalid/api/participant?media='+media.id))).status,401,'Files are private');
  assert.equal((await call('message',{kind:'greeting',recipient:'Команда',body:'С Новым годом!',mediaId:media.id})).status,200);assert.equal((await call('deleteMedia',{id:media.id})).status,200);assert.equal(objects.size,0);
@@ -61,5 +106,5 @@ try{
  bindings.STUDIO_ACCESS_TOKEN='test-editor';const studio=await studioRoute.GET(new Request('https://test.invalid/api/studio',{headers:{Authorization:'Bearer test-editor'}}));assert.equal(studio.status,200);const studioData=await studio.json();assert.equal(studioData.posts.length,5);assert.ok(studioData.posts.every(p=>!('ip' in p)));
  globalThis.fetch=async()=>new Response('{}',{status:200});const retry=await studioRoute.POST(new Request('https://test.invalid/api/studio',{method:'POST',headers:{Authorization:'Bearer test-editor',Origin:'https://test.invalid','Content-Type':'application/json'},body:JSON.stringify({id:queued.value.id})}));assert.equal((await retry.json()).delivery,'sent','Editor can dispatch queued postcards');
  console.log('PASS: public text/voice, consent, idempotency, private files, postcard queue, escaped mail, delivery failures, editor dispatch and rate limit.');
- console.log('PASS: mail gate, domains, CSRF, OTP replay, sessions, profile, ticket idempotency, game rewards, heartbeat, private media, greetings, support and logout.');
+ console.log('PASS: mail gate, domains, CSRF, OTP replay, sessions, profile, ticket idempotency, completion of either studio, two-ticket cap, private media, greetings, support and logout.');
 }finally{Date.now=actualNow;globalThis.fetch=actualFetch;sql.close();await fs.rm(dir,{recursive:true,force:true});delete globalThis.__testEnv}

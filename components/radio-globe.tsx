@@ -1,4 +1,5 @@
 'use client';
+import {readyCanvasFonts} from '@/lib/canvas-fonts';
 import {useEffect,useRef,useState} from 'react';
 import * as T from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
@@ -31,7 +32,7 @@ export default function RadioGlobe({playing=false}:{playing?:boolean}){
   const snowGeo=new T.BufferGeometry();snowGeo.setAttribute('position',new T.BufferAttribute(positions,3));
   const snowMat=new T.ShaderMaterial({transparent:true,depthWrite:false,uniforms:{pointScale:{value:1}},vertexShader:'uniform float pointScale; void main(){vec4 p=modelViewMatrix*vec4(position,1.0); gl_PointSize=clamp(18.0*pointScale/-p.z,1.2,4.5); gl_Position=projectionMatrix*p;}',fragmentShader:'void main(){float d=length(gl_PointCoord-.5);float a=(1.-smoothstep(.20,.5,d))*.65;gl_FragColor=vec4(.95,.99,1.,a);}'});
   const snow=new T.Points(snowGeo,snowMat);pivot.add(snow);
-  let drawScreen:((t:number)=>void)|undefined,lastScreen=0;
+  let drawScreen:((t:number)=>void)|undefined;
   let vinyl:T.Object3D[]=[],reels:T.Object3D[]=[],dj:T.Object3D|undefined,hands:T.Object3D[]=[];
   let targetYaw=0,targetPitch=0,dragging=false,dragX=0,startYaw=0,zoom=0,speed=0,phase=0;
   const mixerMat:T.MeshStandardMaterial[]=[];
@@ -41,7 +42,7 @@ export default function RadioGlobe({playing=false}:{playing?:boolean}){
   function nowPlaying(obj:T.Object3D){
    const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=476;const ctx=canvas.getContext('2d')!;
    const tex=new T.CanvasTexture(canvas);tex.colorSpace=T.SRGBColorSpace;textures.push(tex);const cover=new Image();cover.src='/media/plamya-cover.jpg';
-   drawScreen=()=>{ctx.fillStyle='#0b2231';ctx.fillRect(0,0,1280,476);if(cover.complete&&cover.naturalWidth)ctx.drawImage(cover,38,58,360,360);ctx.fillStyle='#6ed2e6';ctx.font='bold 32px Arial';ctx.fillText('СЕЙЧАС В ЭФИРЕ',450,121);ctx.fillStyle='#fff';ctx.font='bold 76px Arial';ctx.fillText('Снег кружится',450,244,785);ctx.fillStyle='#d0edf2';ctx.font='47px Arial';ctx.fillText('ВИА Пламя',450,326);tex.needsUpdate=true};drawScreen(0);cover.onload=()=>drawScreen?.(0);
+   drawScreen=()=>{ctx.fillStyle='#0b2231';ctx.fillRect(0,0,1280,476);if(cover.complete&&cover.naturalWidth)ctx.drawImage(cover,38,58,360,360);ctx.fillStyle='#6ed2e6';ctx.font='bold 32px "Code Next", sans-serif';ctx.fillText('СЕЙЧАС В ЭФИРЕ',450,121);ctx.fillStyle='#fff';ctx.font='bold 76px "Code Next", sans-serif';ctx.fillText('Снег кружится',450,244,785);ctx.fillStyle='#d0edf2';ctx.font='47px "Code Next", sans-serif';ctx.fillText('ВИА Пламя',450,326);tex.needsUpdate=true};drawScreen(0);void readyCanvasFonts().then(()=>{if(!dead)drawScreen?.(0)});cover.onload=()=>drawScreen?.(0);
    if(obj instanceof T.Mesh)obj.material=new T.MeshBasicMaterial({map:tex});
   }
   function contextLost(e:Event){e.preventDefault();loaded=false;setReady(false)}

@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru" id="telecenter">
-      <head><link rel="stylesheet" href="/telecenter-ui.css?v=98"/><script dangerouslySetInnerHTML={{__html:heroInputScript}} /></head>
+      <head><link rel="stylesheet" href="/brand-type/fonts.css"/><link rel="stylesheet" href="/telecenter-ui.css?v=98"/><script dangerouslySetInnerHTML={{__html:heroInputScript}} /></head>
       <body className="antialiased">{children}</body>
     </html>
   );

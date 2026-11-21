@@ -28,11 +28,11 @@
   padding:calc(var(--kv-header) + env(safe-area-inset-top) + 16px) var(--kv-right) var(--kv-bottom) var(--kv-left);
 }
 .set-copy {position:relative;min-width:0;z-index:1;color:white}
-.set-date {display:flex;align-items:center;gap:.68em;color:white;font:700 clamp(11px,1vw,16px)/1.3 'Code Next',Arial,sans-serif;letter-spacing:.105em;text-transform:uppercase}
+.set-date {display:flex;align-items:center;gap:.68em;color:white;font:700 clamp(11px,1vw,16px)/1.3 var(--iv-body);letter-spacing:.105em;text-transform:uppercase}
 .set-date i {width:.72em;aspect-ratio:1;border-radius:50%;background:#ff610e}
 .ny-site .set-copy h1 {
   white-space:pre-line;color:white;margin:clamp(14px,1.4vw,24px) 0 clamp(22px,2.2vw,36px);
-  font:750 clamp(37px,4.8vw,84px)/1.015 'INVITRO Sans','Code Next',Arial,sans-serif;letter-spacing:-.036em;
+  font:750 clamp(37px,4.8vw,84px)/1.015 var(--iv-display);letter-spacing:-.036em;
 }
 .ny-site .set-copy .set-intro {
   margin:0 0 clamp(16px,2svh,24px);color:inherit;white-space:pre-line;
@@ -55,7 +55,7 @@
   background:radial-gradient(circle at 31% 21%,white,#dcffff 7%,#56ebf0 20%,#00b6c4 52%,#006a84 94%);
 }
 .set-hero[data-actor=visible] .rest-orb {visibility:hidden}
-.flight-speech {position:absolute;top:0;left:0;color:#003e4c;font:700 clamp(11px,1vw,16px)/1.13 'Code Next',Arial,sans-serif;white-space:pre-line;pointer-events:none;text-shadow:0 0 2px #fff,0 1px 4px #e9ffff}
+.flight-speech {position:absolute;top:0;left:0;color:#003e4c;font:700 clamp(11px,1vw,16px)/1.13 var(--iv-body);white-space:pre-line;pointer-events:none;text-shadow:0 0 2px #fff,0 1px 4px #e9ffff}
 .flight-speech[hidden] {display:none}
 @media (max-width:1099px), (orientation:portrait) {
   .ny-site .set-hero {--ratio:1120/792;--ox:var(--tablet-ox);--oy:var(--tablet-oy);--lx:var(--tablet-lx);--ly:var(--tablet-ly);--diam:var(--tablet-diam)}
@@ -111,23 +111,23 @@
 .ny-site #radio .ny-radio-object::before {display:none}
 .ny-site #radio .ny-section-heading {align-self:start;padding:0;max-width:16em;font-size:clamp(36px,3.8vw,64px)}
 .ny-site #radio .ny-section-heading h2 {font-size:inherit;line-height:1;letter-spacing:-.045em;text-transform:uppercase}
-.ny-site #radio .ny-section-heading p {font:400 clamp(15px,1.1vw,19px)/1.4 'Code Next',Arial,sans-serif;margin:16px 0 0}
+.ny-site #radio .ny-section-heading p {font:400 clamp(15px,1.1vw,19px)/1.4 var(--iv-body);margin:16px 0 0}
 #radio .receiver-contact-point {position:absolute;left:87.2%;top:33.5%;width:1px;height:1px;pointer-events:none}
 body .ny-site #radio .rigonda-title {
-  top:16.6%;font:700 clamp(10px,2cqw,18px)/1 'Code Next',Arial,sans-serif!important;
+  top:16.6%;font:700 clamp(10px,2cqw,18px)/1 var(--iv-body)!important;
   letter-spacing:.17em;color:#f5ffff;text-shadow:0 1px 2px #00505c;
 }
 .ny-site #radio .rigonda-object {transform-origin:50% 86%}
 #radio .receiver-controls {display:flex;justify-content:center;align-items:center;gap:clamp(4px,.8vw,12px);margin:-2% auto 0;position:relative;z-index:1}
 #radio .receiver-controls button {display:inline-flex;align-items:center;justify-content:center;gap:7px;
   appearance:none;background:transparent;color:#005464;border:1px solid #80adb94a;border-radius:24px;
-  font:650 clamp(12px,.92vw,15px)/1.15 'Code Next',Arial,sans-serif;min-height:44px;
+  font:650 clamp(12px,.92vw,15px)/1.15 var(--iv-body);min-height:44px;
   padding:6px clamp(10px,1.25vw,20px);box-shadow:none;white-space:nowrap}
 #radio .receiver-controls button:hover {background:#fff9}
 #radio .receiver-controls .receiver-play {background:#005564;color:#fff;border-color:#005564}
 #radio .receiver-controls .receiver-play:hover {background:#006e80}
 #radio .receiver-controls svg {width:16px;height:16px;stroke-width:1.75;flex-shrink:0}
-#radio .receiver-status {font:600 12px/1.35 'Code Next',Arial,sans-serif;color:#005564;text-align:center;min-height:26px;padding-top:8px}
+#radio .receiver-status {font:600 12px/1.35 var(--iv-body);color:#005564;text-align:center;min-height:26px;padding-top:8px}
 #radio[data-flight-lit=true] .rigonda-glass .kv-lamplight,
 #radio .kv-radio.is-playing .kv-lamplight {opacity:1;transition:opacity 65ms}
 .ny-site #promo.ny-promo {padding-top:clamp(12px,3svh,40px)}
@@ -251,7 +251,7 @@ body .ny-site #radio .rigonda-title {
  font-size:clamp(30px,3.75vw,62px);line-height:1;letter-spacing:-.045em;margin:0;padding:0;text-wrap:balance;
 }
 .ny-site #radio .ny-section-heading p,.ny-site #promo:has(.promo-tv-stage) .ny-promo-head p {
- margin:clamp(7px,.9vw,15px) 0 0;font:400 clamp(14px,1.2vw,19px)/1.3 'Code Next',Arial,sans-serif;
+ margin:clamp(7px,.9vw,15px) 0 0;font:400 clamp(14px,1.2vw,19px)/1.3 var(--iv-body);
 }
 .ny-site #promo.ny-promo:has(.promo-tv-stage) {padding:var(--row-gap) 0 clamp(22px,4svh,52px)}
 .ny-site #promo:has(.promo-tv-stage) .ny-promo-head {grid-area:1/2;display:block;width:var(--prop);max-width:100%;justify-self:center;margin:0;padding:0;align-self:center}

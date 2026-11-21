@@ -2,6 +2,7 @@
 import {useEffect,useRef,useState} from 'react';
 import * as T from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {geometryUrl} from 'virtual:invitro-typography';
 import {FontLoader} from 'three/addons/loaders/FontLoader.js';
 import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
@@ -33,7 +34,7 @@ export default function RegistrationCounter({count,ticketDisplay=false}:{count:n
    floor.rotation.x=-Math.PI/2;floor.position.y=-.025;// Reflection is disabled on this transparent stage: avoid an opaque offscreen pass.
    floor.visible=false;scene.add(floor);
    const shadow=mesh(scene,new T.PlaneGeometry(80,80),new T.ShadowMaterial({color:'#5e95a0',opacity:.10,depthWrite:false}),0,-.015,0);shadow.rotation.x=-Math.PI/2;shadow.castShadow=false;
-   font=await new FontLoader().loadAsync('/lottery/counter-font.json');if(dead)return;
+   font=await new FontLoader().loadAsync(geometryUrl);if(dead)return;
    // Pearlescent face, rounded translucent-colour rim, inset mechanical digits.
    box(7.65,3.84,.55,.26,edge,1.58,1.95,0);box(7.46,3.66,.5,.23,pearl,1.58,1.95,.11);
    label('УЖЕ В ИГРЕ',.36,ink,1.58,3.15,.4);

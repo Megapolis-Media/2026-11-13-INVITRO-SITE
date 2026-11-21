@@ -5,6 +5,7 @@ type TicketPrint = {
   earned?: boolean;
   region?: string;
   clipId?: string;
+  embeddedFontCSS?: string;
 };
 
 function xml(value: string) {
@@ -17,7 +18,7 @@ function fittedLine(value: string, width: number, preferredSize: number, y: numb
 }
 
 /** Screen, print and mail share one die line, number layout and personalized type. */
-export function ticketArtwork({number, backdrop, name = '', earned = false, region = '', clipId = 'ticket-cut'}: TicketPrint) {
+export function ticketArtwork({number, backdrop, name = '', earned = false, region = '', clipId = 'ticket-cut', embeddedFontCSS = ''}: TicketPrint) {
   const digits = number.match(/^(\d{2})\s*[-–—]?\s*(\d{3})$/);
   const label = digits ? digits[1] + digits[2] : number;
   const ink = '#004b60';
@@ -28,8 +29,8 @@ export function ticketArtwork({number, backdrop, name = '', earned = false, regi
     : fittedLine(number, 715, 93, 487, ink, 700);
   return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-label="${xml('Новогодний телецентр INVITRO. Билет '+label+'. 23 декабря, 12:00 МСК. invitrotv.ru')}">
   <title>${xml('Новогодний телецентр INVITRO · '+label)}</title>
-  <defs><clipPath id="${xml(clipId)}"><path d="${silhouette}"/></clipPath></defs>
-  <g clip-path="url(#${xml(clipId)})" font-family="Arial, 'Liberation Sans', sans-serif">
+  <defs>${embeddedFontCSS ? `<style>${embeddedFontCSS}</style>` : ''}<clipPath id="${xml(clipId)}"><path d="${silhouette}"/></clipPath></defs>
+  <g clip-path="url(#${xml(clipId)})" font-family="'Code Next', sans-serif">
     <image width="1280" height="640" xlink:href="${xml(backdrop)}"/>
     <text x="47" y="${personalized ? 376 : 403}" fill="${ink}" font-weight="700" font-size="28" letter-spacing="2">${earned ? 'БИЛЕТ ЗА АКТИВНОСТЬ' : 'ЛОТЕРЕЙНЫЙ БИЛЕТ'}</text>
     ${printedNumber}

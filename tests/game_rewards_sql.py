@@ -1,34 +1,75 @@
-"""Verify the actual reward SQL, migrated database, and concurrent final awards."""
-import pathlib,re,sqlite3,tempfile,concurrent.futures
-root=pathlib.Path(__file__).resolve().parents[1]
-source=(root/'app/api/games/route.ts').read_text()
-award=re.search(r'd\.prepare\("(INSERT INTO achievements.*?)"\)\.bind',source).group(1)
-issue=re.search(r'export const issue=.*?prepare\(`(.*?)`\)',(root/'lib/participant/server.ts').read_text(),re.S).group(1)
-with tempfile.TemporaryDirectory() as tmp:
- path=tmp+'/games.db';c=sqlite3.connect(path)
- for f in sorted((root/'drizzle').glob('*.sql')):c.executescript(f.read_text())
- c.execute('INSERT INTO lottery_settings VALUES(1,1,16,0)')
- c.execute("INSERT INTO participants(id,email,first,last,agglomeration,created) VALUES('u','u@test.invalid','Имя','Фамилия','Юг',0)")
- c.execute(issue,('u','registration',0,'u','registration','u','registration','registration','u','u'))
- def reward(con,number,owner='u',guest=0,solved=1):
-  rid=f'{owner}-{number}';key=f'yak:w{number:02}'
-  con.execute('INSERT OR IGNORE INTO game_rounds(id,user,game,question,solved,created,expires) VALUES(?,?,?,?,?,0,9999999999999)',(rid,owner,'yak',key,solved))
-  con.execute(award,(rid,owner,key,owner,0,guest,rid,owner,owner,owner,key,owner))
-  con.execute(issue,(owner,'activity',0,owner,'activity',owner,'activity','activity',owner,owner))
- reward(c,1);reward(c,1)
- assert c.execute('SELECT SUM(points) FROM achievements').fetchone()[0]==10
- reward(c,98,solved=0);assert c.execute('SELECT SUM(points) FROM achievements').fetchone()[0]==10
- reward(c,99,owner='guest:x',guest=1);assert c.execute('SELECT SUM(points) FROM achievements').fetchone()[0]==10
- for n in range(2,10):reward(c,n)
- assert c.execute('SELECT SUM(points) FROM achievements').fetchone()[0]==90
- assert c.execute('SELECT COUNT(*) FROM tickets').fetchone()[0]==1
- c.commit()
- def concurrent_award(n):
-  con=sqlite3.connect(path,timeout=30)
-  with con:reward(con,n)
-  con.close()
- with concurrent.futures.ThreadPoolExecutor(max_workers=12) as pool:list(pool.map(concurrent_award,[10]*24+list(range(11,35))))
- assert c.execute('SELECT SUM(points) FROM achievements').fetchone()[0]==100
- assert c.execute('SELECT COUNT(*) FROM tickets').fetchone()[0]==2
- assert c.execute('SELECT COUNT(*) FROM achievements WHERE points<=0').fetchone()[0]==0
- print('PASS: per-question +10 once; unsolved/guest zero; 90→100 with 48 concurrent requests; cap100; exactly two tickets; replay no extra reward.')
+"""Exercise migration, either studio, ticket limits and concurrent issuance against actual SQL."""
+import concurrent.futures
+import json
+from pathlib import Path
+import re
+import sqlite3
+import tempfile
+
+root = Path(__file__).resolve().parents[1]
+source = (root / 'lib/participant/server.ts').read_text()
+issue_sql = re.search(r'export const issue=.*?prepare\(`(.*?)`\)', source, re.S)[1]
+required = {'yak': ['w11', 'w12'], 'pelsh': ['m01', 'm02']}
+
+
+def issue(db, user, kind='activity', bank=required):
+    db.execute(issue_sql, (user, kind, 1, user, kind, user, kind, kind, user, json.dumps(bank), user))
+
+
+def person(db, user):
+    db.execute("INSERT INTO participants(id,email,first,last,agglomeration,created) VALUES(?,?,'Имя','Фамилия','Юг',0)", (user, user+'@example.test'))
+
+
+def solve(db, user, game, question):
+    db.execute('INSERT OR IGNORE INTO game_completions VALUES(?,?,?)', (user, game, question))
+
+
+def count(db, user):
+    return db.execute('SELECT COUNT(*) FROM tickets WHERE user=?', (user,)).fetchone()[0]
+
+
+if __name__ == '__main__':
+    with tempfile.TemporaryDirectory() as tmp:
+        db_path = tmp+'/lottery.db'
+        db = sqlite3.connect(db_path)
+        migrations = sorted((root / 'drizzle').glob('*.sql'))
+        for f in migrations[:-1]:
+            db.executescript(f.read_text())
+        person(db, 'legacy')
+        db.execute("INSERT INTO achievements VALUES('a','legacy','yak:w11',10,0)")
+        db.execute("INSERT INTO achievements VALUES('b','legacy','yak',90,0)")
+        db.execute("INSERT INTO game_rounds(id,user,game,question,solved,created,expires) VALUES('r','legacy','yak','w12',1,0,1)")
+        db.executescript(migrations[-1].read_text())
+        assert db.execute('SELECT COUNT(*) FROM game_completions').fetchone()[0] == 2
+        db.execute('INSERT INTO lottery_settings VALUES(1,1,13,0)')
+        for user in ('legacy', 'music', 'mixed', 'empty'):
+            if user != 'legacy':
+                person(db, user)
+            issue(db, user, 'registration')
+        issue(db,'legacy')
+        assert count(db,'legacy') == 2
+        solve(db,'mixed','yak','w11')
+        solve(db,'mixed','pelsh','m02')
+        solve(db,'mixed','yak','retired')
+        issue(db,'mixed')
+        assert count(db,'mixed') == 1
+        issue(db,'empty', bank={'yak': [], 'pelsh': []})
+        assert count(db,'empty') == 1
+        for question in required['pelsh']:
+            solve(db,'music','pelsh',question)
+        db.commit()
+
+        def claim(_):
+            con=sqlite3.connect(db_path, timeout=30)
+            with con:
+                issue(con,'music')
+            con.close()
+
+        with concurrent.futures.ThreadPoolExecutor(max_workers=12) as pool:
+            list(pool.map(claim,range(48)))
+        assert count(db,'music') == 2
+        for question in required['yak']:
+            solve(db,'music','yak',question)
+        issue(db,'music')
+        assert count(db,'music') == 2
+        print('PASS: migration, exact published tasks, empty/partial/mixed studios, either studio, 48 concurrent claims, max two tickets.')

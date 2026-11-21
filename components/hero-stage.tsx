@@ -4,6 +4,7 @@ import * as T from 'three';
 import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
 import {RoomEnvironment} from 'three/addons/environments/RoomEnvironment.js';
 import {Reflector} from 'three/addons/objects/Reflector.js';
+import {geometryUrl} from 'virtual:invitro-typography';
 import {FontLoader} from 'three/addons/loaders/FontLoader.js';
 import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
 
@@ -40,7 +41,7 @@ export default function HeroStage(){
    root.traverse(o=>{if(o instanceof T.Mesh){o.castShadow=true;o.receiveShadow=true;for(const m of Array.isArray(o.material)?o.material:[o.material])if(m instanceof T.MeshStandardMaterial){m.envMapIntensity=.65;if(/INVITRO.*(Blue|cyan)/i.test(m.name)){m.color.set('#00acc6');m.roughness=.23;m.metalness=.12;}if(/Vinyl grooves|Black Blue rubber/i.test(m.name)){m.envMapIntensity=.28;m.roughness=.32;}}}});
    scene.add(root);models[id]=root;layout();
   }
-  async function title(){const font=await new FontLoader().loadAsync('/lottery/counter-font.json');if(dead)return;const root=new T.Group(),front=new T.MeshPhysicalMaterial({color:'#ffffff',roughness:.23,metalness:.1,clearcoat:1}),side=new T.MeshPhysicalMaterial({color:'#007d96',roughness:.2,metalness:.35,clearcoat:1});
+  async function title(){const font=await new FontLoader().loadAsync(geometryUrl);if(dead)return;const root=new T.Group(),front=new T.MeshPhysicalMaterial({color:'#ffffff',roughness:.23,metalness:.1,clearcoat:1}),side=new T.MeshPhysicalMaterial({color:'#007d96',roughness:.2,metalness:.35,clearcoat:1});
    for(const [str,y,width] of [['ТЕЛЕЦЕНТР',1.32,7.3],['INVITRO',0,7.3]] as [string,number,number][]){const geo=new TextGeometry(str,{font,size:1,depth:.22,curveSegments:8,bevelEnabled:true,bevelThickness:.015,bevelSize:.012,bevelSegments:3});geo.computeBoundingBox();const b=geo.boundingBox!;const scale=width/(b.max.x-b.min.x);geo.scale(scale,scale,1);geo.computeBoundingBox();geo.translate(-(geo.boundingBox!.max.x+geo.boundingBox!.min.x)/2,y,0);const mesh=new T.Mesh(geo,[front,side]);mesh.castShadow=true;root.add(mesh)}scene.add(root);models.title=root;layout();}
   Promise.all([load('tv','RETRO_TV',4.8,-.08),load('camera','BROADCAST_CAMERA',2.35,-.55),load('radio','RETRO_RADIO',2.5,.16),load('vinyl','VINYL_RECORD',3.25),load('ball','LOTTO_BALL_23',2.2,-.16),load('remote','TV_REMOTE',.65,-.16),title()]).then(()=>{if(!dead){renderer!.render(scene,camera);setReady(true)}}).catch(()=>{if(!dead)setReady(false)});
   function tick(now:number){raf=requestAnimationFrame(tick);const dt=Math.min((now-last)/1000||0,.05);last=now;if(!active||document.hidden||now-lastDraw<1000/(mobile?30:45))return;lastDraw=now;if(!pause.current&&!motion.matches)time+=dt;

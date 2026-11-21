@@ -3,7 +3,7 @@
 .flight-world canvas{position:absolute;inset:0;pointer-events:none}
 .flight-ball-fallback{position:absolute;left:0;top:0;border-radius:50%;background:radial-gradient(circle at 30% 24%,#e5fcff 0,#54daec 14%,#00acc6 48%,#005574 95%);box-shadow:inset -3px -5px 8px #003c5a66,inset 2px 3px 6px #b5faff88;will-change:transform;display:grid;place-items:center}
 .flight-ball-fallback[hidden]{display:none}
-.flight-ball-fallback span{display:grid;place-items:center;width:65%;height:65%;border-radius:50%;background:linear-gradient(135deg,#fff,#d6f4fb);color:#005564;font:bold 26px/1 Arial;box-shadow:inset -2px -3px 5px #638f9f33}
+.flight-ball-fallback span{display:grid;place-items:center;width:65%;height:65%;border-radius:50%;background:linear-gradient(135deg,#fff,#d6f4fb);color:#005564;font:bold 26px/1 var(--iv-body);box-shadow:inset -2px -3px 5px #638f9f33}
 .flight-contact{--contact:0;position:absolute;right:6%;top:0;width:62px;height:17px;transform:translateY(-45%);border-radius:50%;background:linear-gradient(#fff,#99bbc6 60%,#466f7b);box-shadow:0 3px 5px #003b4f44;z-index:5;pointer-events:none}
 .flight-contact:before{content:'';position:absolute;inset:0 7px 5px;border-radius:50%;background:linear-gradient(#ffad65,#ff5601);border:1px solid #ffb78e;transform:translateY(calc(-5px + var(--contact)*5px));box-shadow:0 3px 0 #aa3c0a}
 .flight-contact:after{content:'';position:absolute;inset:-3px 8px 6px;border-radius:50%;background:#004153;filter:blur(4px);opacity:calc(var(--contact)*.3)}

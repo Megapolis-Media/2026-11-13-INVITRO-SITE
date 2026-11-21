@@ -1,0 +1,47 @@
+name: Deploy INVITRO production
+
+on:
+  push:
+    branches:
+      - master
+
+permissions: {}
+
+concurrency:
+  group: invitrotv-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.repository == 'Megapolis-Media/2026-11-13-INVITRO-SITE' && !github.event.deleted
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    environment:
+      name: production
+      url: https://invitrotv.ru
+    steps:
+      - name: Release the approved master commit
+        env:
+          SSH_HOST: ${{ vars.DEPLOY_SSH_HOST }}
+          SSH_USER: ${{ vars.DEPLOY_SSH_USER }}
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$SSH_HOST" =~ ^[A-Za-z0-9][A-Za-z0-9.-]*$ || ! "$SSH_USER" =~ ^[a-z_][a-z0-9_-]*$ || -z "$SSH_KEY" || -z "$SSH_KNOWN_HOSTS" ]]; then
+            echo '::error::Configure the production SSH variables, dedicated key, and verified host key.'
+            exit 1
+          fi
+          umask 077
+          credentials=$(mktemp -d)
+          trap 'rm -rf -- "$credentials"' EXIT
+          printf '%s\n' "$SSH_KEY" > "$credentials/key"
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > "$credentials/known_hosts"
+          unset SSH_KEY SSH_KNOWN_HOSTS
+          ssh -F /dev/null -i "$credentials/key" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            -o "UserKnownHostsFile=$credentials/known_hosts" -o GlobalKnownHostsFile=/dev/null \
+            -o ConnectTimeout=15 -o ServerAliveInterval=20 -o ServerAliveCountMax=3 \
+            -- "$SSH_USER@$SSH_HOST" "$GITHUB_SHA"
+      - name: Check the public site
+        run: curl --fail --silent --show-error --retry 3 --max-time 10 --output /dev/null https://invitrotv.ru/api/event

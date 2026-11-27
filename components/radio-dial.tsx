@@ -3,21 +3,19 @@ import {useEffect,useRef,useState,type CSSProperties} from 'react';
 import './radio-dial.css';
 import CabinetVolume from './cabinet-volume';
 
-// Left to right by representative regional centre, from the Pacific to Minsk.
-// VET UNION sits beside Moscow, where its veterinary laboratory is based.
 const stations=[
- {name:'Сибирь и Дальний Восток',lines:['Сибирь и','Дальний Восток'],x:7,left:0,row:0,width:33},
- {name:'Казахстан',lines:['Казахстан'],x:16,left:2,row:71,width:24},
- {name:'Урал',lines:['Урал'],x:26,left:23,row:47,width:11},
- {name:'Приволжье',lines:['Приволжье'],x:36,left:30,row:0,width:23},
+ {name:'Беларусь',lines:['Беларусь'],x:7,left:0,row:0,width:22},
+ {name:'Северо-Запад',lines:['Северо-Запад'],x:16,left:2,row:71,width:28},
+ {name:'Центр',lines:['Центр'],x:26,left:22,row:47,width:14},
+ {name:'Москва и Центр компетенций',lines:['Москва и Центр','компетенций'],x:36,left:29,row:0,width:36},
  {name:'Юг',lines:['Юг'],x:45,left:40,row:70,width:10},
- {name:'VET UNION',lines:['VET UNION'],x:54,left:46,row:46,width:20},
- {name:'Москва и Центр компетенций',lines:['Москва и Центр','компетенций'],x:63,left:56,row:0,width:37},
- {name:'Центр',lines:['Центр'],x:73,left:67,row:70,width:14},
- {name:'Северо-Запад',lines:['Северо-Запад'],x:82,left:74,row:47,width:26},
- {name:'Беларусь',lines:['Беларусь'],x:93,left:83,row:75,width:17},
+ {name:'Приволжье',lines:['Приволжье'],x:54,left:46,row:46,width:23},
+ {name:'Урал',lines:['Урал'],x:63,left:57,row:70,width:12},
+ {name:'Казахстан',lines:['Казахстан'],x:73,left:69,row:47,width:24},
+ {name:'Сибирь и Дальний Восток',lines:['Сибирь и','Дальний Восток'],x:82,left:69,row:0,width:31},
+ {name:'VET UNION',lines:['VET UNION'],x:93,left:81,row:75,width:19},
 ];
-const east=stations[0].x,west=stations[stations.length-1].x;
+const firstMark=stations[0].x,lastMark=stations[stations.length-1].x;
 export default function RadioDial({playing=false, miniature=false}:{playing?:boolean;miniature?:boolean}){
  const root=useRef<HTMLDivElement>(null),needle=useRef<HTMLDivElement>(null),plate=useRef<HTMLVideoElement>(null);
  const elapsed=useRef(0),lastActive=useRef(-1);
@@ -40,9 +38,9 @@ export default function RadioDial({playing=false, miniature=false}:{playing?:boo
   const tick=(now:number)=>{
    if(last&&!document.hidden){if(tuning)tuningElapsed+=Math.min(now-last,70);else elapsed.current+=Math.min(now-last,70);}
    last=now;
-   // Dwell at the western end, then restart at the eastern mark.
+   // Dwell at the last mark, then restart at the first.
    const progress=tuning?Math.min(tuningElapsed/280,1)*.06:Math.min((elapsed.current%26000)/24000,1);
-   const position=east+(west-east)*progress;
+   const position=firstMark+(lastMark-firstMark)*progress;
    if(needle.current)needle.current.style.transform=`translateX(${position-50}%)`;
    const hit=stations.findIndex(s=>Math.abs(s.x-position)<2.8);
    if(hit!==lastActive.current){lastActive.current=hit;setActive(hit)}
@@ -56,7 +54,7 @@ export default function RadioDial({playing=false, miniature=false}:{playing?:boo
    <img className="rigonda-body" src="/media/radio-kv-2026.webp" alt="" width="1920" height="1080" loading="lazy"/>
    {!miniature&&<video ref={plate} className="kv-radio-plate" src="/media/radio-kv-loop.mp4" poster="/media/radio-kv-2026.webp" muted loop playsInline preload="none" aria-hidden="true"/>}
    <h3 className="rigonda-title">ИНВИТРО FM</h3>
-   <div className="rigonda-glass" role="group" aria-label="Радиошкала ИНВИТРО, с востока на запад">
+   <div className="rigonda-glass" role="group" aria-label="Радиошкала ИНВИТРО">
     <div className="kv-lamplight" aria-hidden="true"/>
     <div className="rigonda-print">
      <div className="rigonda-indices" aria-hidden="true">{stations.map((s,i)=><span key={s.name} style={{left:s.x+'%'}}>{String(i+1).padStart(2,'0')}</span>)}</div>
